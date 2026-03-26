@@ -1,6 +1,6 @@
 {
   "name": "custom-push",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "CustomPush - Firebase push notifications setup tool",
   "main": "dist/lib/index.js",
   "types": "dist/lib/index.d.ts",

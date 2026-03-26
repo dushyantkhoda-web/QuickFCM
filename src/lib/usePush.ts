@@ -40,13 +40,23 @@ export function usePush({ config, onMessage: onMsg, onTokenChange }: UsePushOpti
       }
 
       onMessage(messaging, (payload) => {
+        console.log('[custom-push] Foreground message (hook) received:', payload)
+
+        const messageUrl = 
+             payload.data?.action_url 
+          || payload.data?.url 
+          || payload.data?.route 
+          || payload.data?.click_action 
+          || (payload as any).fcmOptions?.link
+
         const message: PushMessage = {
           id: Date.now().toString(),
           title: payload.notification?.title || payload.data?.title || '',
           body: payload.notification?.body || payload.data?.body || '',
           icon: payload.notification?.icon || payload.data?.icon,
-          url: payload.data?.url || payload.data?.route || (payload as any).fcmOptions?.link,
+          url: messageUrl,
           data: payload.data as Record<string, string> | undefined,
+          payload: payload,
           timestamp: Date.now(),
         }
         onMsg?.(message)

@@ -17,6 +17,7 @@ export interface PushMessage {
   icon?: string
   url?: string
   data?: Record<string, string>
+  payload: any
   timestamp: number
 }
 
