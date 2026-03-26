@@ -1,6 +1,6 @@
 # Custom Push CLI
 
-> 🚀 Backend scaffolding for Firebase push notifications with optional frontend support
+> Backend scaffolding for Firebase push notifications with optional frontend support
 
 [![npm version](https://badge.fury.io/js/custom-push.svg)](https://badge.fury.io/js/custom-push)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
