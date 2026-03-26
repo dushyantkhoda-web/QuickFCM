@@ -86,6 +86,7 @@ export function CustomPushProvider({ config, children }: CustomPushProviderProps
               || (payload as any).fcmOptions?.link,
             data: payload.data as Record<string, string> | undefined,
             timestamp: Date.now(),
+            payload: payload
           }])
         })
       })()
