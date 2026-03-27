@@ -41,6 +41,8 @@ export async function detectProject(cwd: string, options: { backendOnly?: boolea
 
   // ── backend framework ─────────────────────────────────────────────────
   let backendFramework: BackendFramework = null
+  const hasFirebaseAdmin = !!(deps['firebase-admin'] || devDeps['firebase-admin'])
+
   if (deps['@nestjs/core'] || devDeps['@nestjs/core']) {
     backendFramework = 'nestjs'
   } else if (deps['express']) {
@@ -78,6 +80,7 @@ export async function detectProject(cwd: string, options: { backendOnly?: boolea
     hasTsConfig,
     isNextJs,
     isVite,
+    hasFirebaseAdmin,
     packageJson,
   }
 }

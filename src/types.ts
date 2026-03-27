@@ -41,6 +41,7 @@ export interface ProjectInfo {
   hasTsConfig: boolean
   isNextJs: boolean
   isVite: boolean
+  hasFirebaseAdmin: boolean             // check for 'firebase-admin' in deps
   packageJson: Record<string, any>
 }
 
