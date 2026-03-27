@@ -20,12 +20,12 @@ export async function scaffoldFrontend(context: CLIContext): Promise<ScaffoldedF
   const swTemplate = await readFile(swTemplatePath)
 
   const swContent = renderTemplate(swTemplate, {
-    API_KEY: answers.firebase.apiKey,
-    AUTH_DOMAIN: answers.firebase.authDomain,
-    PROJECT_ID: answers.firebase.projectId,
-    STORAGE_BUCKET: answers.firebase.storageBucket,
-    MESSAGING_SENDER_ID: answers.firebase.messagingSenderId,
-    APP_ID: answers.firebase.appId,
+    API_KEY: answers.firebase.apiKey || '',
+    AUTH_DOMAIN: answers.firebase.authDomain || '',
+    PROJECT_ID: answers.firebase.projectId || '',
+    STORAGE_BUCKET: answers.firebase.storageBucket || '',
+    MESSAGING_SENDER_ID: answers.firebase.messagingSenderId || '',
+    APP_ID: answers.firebase.appId || '',
   })
 
   const swPath = path.join(project.publicDir, SERVICE_WORKER_FILENAME)

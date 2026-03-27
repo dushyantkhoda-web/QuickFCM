@@ -1,11 +1,11 @@
 export interface PushConfig {
-  apiKey: string
-  authDomain: string
-  projectId: string
-  storageBucket: string
-  messagingSenderId: string
-  appId: string
-  vapidKey: string
+  apiKey?: string
+  authDomain?: string
+  projectId?: string
+  storageBucket?: string
+  messagingSenderId?: string
+  appId?: string
+  vapidKey?: string
   registerUrl?: string       // POST endpoint to save token to backend
   unregisterUrl?: string     // POST endpoint to remove token from backend
 }

@@ -96,7 +96,7 @@ export async function init(options: { generateFrontend?: boolean; backendOnly?: 
   }
 
   // ── Step 7: Scaffold backend ──────────────────────────────────────────
-  if (project.scope === 'both') {
+  if (project.scope === 'both' || backendOnly) {
     showStep(7, 'Building backend infrastructure...')
     const backSpin = createSpinner('Generating backend helpers...', 'line')
     backSpin.start()

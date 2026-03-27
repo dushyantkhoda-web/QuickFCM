@@ -1,4 +1,5 @@
 import { program } from 'commander'
+import packageJson from '../../package.json'
 import { init } from './init'
 import { generateServiceWorker } from './generateServiceWorker'
 import { header, footer, showError, showWarning } from '../utils/branding'
@@ -6,7 +7,7 @@ import { header, footer, showError, showWarning } from '../utils/branding'
 program
   .name('custom-push')
   .description('CustomPush - Firebase push notifications setup tool')
-  .version('1.0.0')
+  .version(packageJson.version)
 
 // Main init command - backend focused by default
 program
