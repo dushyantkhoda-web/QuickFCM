@@ -18,7 +18,7 @@ export async function readCredentials(
   // 2. File not found → exit
   if (!(await fileExists(absolutePath))) {
     logger.error(`File not found: ${absolutePath}`)
-    logger.error('Check the path and re-run: npx custom-push init')
+    logger.error('Check the path and re-run: npx pushfire init')
     process.exit(1)
   }
 

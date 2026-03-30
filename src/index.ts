@@ -6,8 +6,8 @@ import { header, footer, showError, showWarning } from './utils/branding'
 
 export function runCLI() {
   program
-    .name('custom-push')
-    .description('CustomPush - Firebase push notifications setup tool')
+    .name('pushfire')
+    .description('PushFire - Firebase push notifications setup tool')
     .version(packageJson.version)
 
   // Main init command
@@ -18,19 +18,19 @@ export function runCLI() {
     .option('--generate-frontend', 'Generate frontend boilerplate files')
     .option('--backend-only', 'Skip frontend completely, backend only')
     .action(async (options) => {
-      header('CustomPush', 'Firebase Push Notifications Setup Tool')
-      
+      header('PushFire', 'Firebase Push Notifications Setup Tool')
+
       try {
         await init(options)
-        footer('CustomPush setup completed successfully')
+        footer('PushFire setup completed successfully')
       } catch (error: any) {
         if (error.name === 'ExitPromptError' || error.message?.includes('User force closed')) {
           showWarning('Setup Cancelled', 'Setup was cancelled by user')
-          footer('Run again anytime with: npx custom-push init')
+          footer('Run again anytime with: npx pushfire init')
           process.exit(0)
         } else {
           showError('Setup Failed', error.message || 'Unknown error occurred', 'Check troubleshooting guide for help')
-          footer('Need help? https://github.com/Dushyant-Khoda/custom-push/issues')
+          footer('Need help? https://github.com/dushyantkhoda-web/pushfire/issues')
           process.exit(1)
         }
       }
@@ -42,15 +42,15 @@ export function runCLI() {
     .alias('generate-sw')
     .description('Generate only the service worker file')
     .action(async () => {
-      header('CustomPush Service Worker Generator')
-      
+      header('PushFire Service Worker Generator')
+
       try {
         await generateServiceWorker()
         footer('Service worker generated successfully')
       } catch (error: any) {
         if (error.name === 'ExitPromptError' || error.message?.includes('User force closed')) {
           showWarning('Generation Cancelled', 'Service worker generation was cancelled')
-          footer('Run again anytime with: npx custom-push generate-service-worker')
+          footer('Run again anytime with: npx pushfire generate-service-worker')
           process.exit(0)
         } else {
           showError('Generation Failed', error.message || 'Failed to generate service worker', 'Ensure Firebase configuration is ready')
@@ -63,7 +63,7 @@ export function runCLI() {
   // Handle uncaught promise rejections
   process.on('unhandledRejection', (reason) => {
     showError('Unexpected Error', reason instanceof Error ? reason.message : String(reason), 'Please report this issue to help us improve')
-    footer('Report: https://github.com/Dushyant-Khoda/custom-push/issues')
+    footer('Report: https://github.com/dushyantkhoda-web/pushfire/issues')
     process.exit(1)
   })
 

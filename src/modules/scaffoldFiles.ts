@@ -25,14 +25,14 @@ async function readTemplate(name: string, templatePath: string): Promise<string>
   } catch (err: any) {
     throw new Error(
       `Template "${name}" not found at: ${templatePath}\n` +
-      '  → Try reinstalling custom-push: npm install -g custom-push@latest'
+      '  → Try reinstalling pushfire: npm install -g pushfire@latest'
     )
   }
 }
 
 /**
  * Scaffolds standalone push notification files into src/push-notification/.
- * Used when --files flag is provided. These files do NOT depend on the custom-push
+ * Used when --files flag is provided. These files do NOT depend on the pushfire
  * npm package at runtime — they import directly from firebase.
  */
 export async function scaffoldFiles(context: CLIContext): Promise<ScaffoldedFile[]> {

@@ -4,17 +4,17 @@
 
 ### Installation Issues
 
-#### command not found: custom-push"
+#### command not found: pushfire"
 **Problem**: CLI not recognized after global install.
 
 **Solutions**:
 ```bash
 # Use npx instead (recommended)
-npx custom-push init
+npx pushfire init
 
 # Reinstall globally
-npm uninstall -g custom-push
-npm install -g custom-push
+npm uninstall -g pushfire
+npm install -g pushfire
 
 # Check npm global path
 npm config get prefix
@@ -31,7 +31,7 @@ export PATH=$(npm config get prefix)/bin:$PATH
 sudo chown -R $(whoami) ~/.npm
 
 # Or use npx (no permissions needed)
-npx custom-push init
+npx pushfire init
 
 # Or use node version manager (nvm)
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
@@ -51,7 +51,7 @@ ls package.json  # Should exist
 # Or create new React project
 npx create-react-app my-app
 cd my-app
-npx custom-push init
+npx pushfire init
 ```
 
 ### Firebase Configuration Issues
@@ -344,11 +344,11 @@ Enable debug logging to troubleshoot issues:
 
 ```bash
 # Enable debug mode
-DEBUG=custom-push:* npx custom-push init
+DEBUG=pushfire:* npx pushfire init
 
 # Or set environment variable
-export DEBUG=custom-push:*
-npx custom-push init
+export DEBUG=pushfire:*
+npx pushfire init
 ```
 
 ### Browser Console Debugging
@@ -384,7 +384,7 @@ If you're still stuck:
 1. **Check the logs**:
    ```bash
    # CLI logs
-   npx custom-push init --verbose
+   npx pushfire init --verbose
    
    # Browser console
    # Open developer tools and check for errors
@@ -392,7 +392,7 @@ If you're still stuck:
 
 2. **Create minimal reproduction**:
    - Create fresh React project
-   - Run custom-push init
+   - Run pushfire init
    - Test basic functionality
 
 3. **File an issue**:
@@ -402,7 +402,7 @@ If you're still stuck:
 
 4. **Community resources**:
    - GitHub Issues
-   - Stack Overflow with `custom-push` tag
+   - Stack Overflow with `pushfire` tag
    - Firebase documentation
 
 ## Advanced Troubleshooting
@@ -450,7 +450,7 @@ For automated deployments:
   run: npm ci
   
 - name: Setup push notifications
-  run: npx custom-push init --yes
+  run: npx pushfire init --yes
   env:
     FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
     #  other env vars

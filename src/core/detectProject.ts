@@ -10,7 +10,7 @@ export async function detectProject(cwd: string, options: { backendOnly?: boolea
   // ── package.json ──────────────────────────────────────────────────────
   const pkgPath = path.join(rootDir, 'package.json')
   if (!(await fileExists(pkgPath))) {
-    logger.error('✖  No package.json found. Run custom-push init from your project root.')
+    logger.error('✖  No package.json found. Run pushfire init from your project root.')
     process.exit(1)
   }
   const packageJson = await readJson<Record<string, any>>(pkgPath)
@@ -58,7 +58,7 @@ export async function detectProject(cwd: string, options: { backendOnly?: boolea
 
   // ── publicDir ─────────────────────────────────────────────────────────
   const publicDir = path.join(rootDir, 'public')
-  
+
   // Only create public directory and warn if not in backend-only mode
   if (!backendOnly) {
     if (!(await fileExists(publicDir))) {

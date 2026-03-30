@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## 1.0.0] — 2026-03-26
 
 ### Added
-- Initial release of `custom-push` CLI
+- Initial release of `pushfire` CLI
 - Auto-detection of language, React version, Firebase version, and backend framework
 - Interactive prompts for Firebase web config, VAPID key, backend URLs, and credentials path
 - Semver-based version compatibility validation (Firebase ≥10 <13, React ≥17)

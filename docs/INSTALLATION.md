@@ -6,23 +6,23 @@
 No installation required - runs directly from npm:
 
 ```bash
-npx custom-push init
+npx pushfire init
 ```
 
 ### Option 2: Global Install
 Install globally for use in any project:
 
 ```bash
-npm install -g custom-push
-custom-push init
+npm install -g pushfire
+pushfire init
 ```
 
 ### Option 3: Local Dev Install
 Install as dev dependency in your project:
 
 ```bash
-npm install --save-dev custom-push
-npx custom-push init
+npm install --save-dev pushfire
+npx pushfire init
 ```
 
 ## System Requirements
@@ -43,7 +43,7 @@ npx custom-push init
 If you only need a notification engine for your server:
 
 ```bash
-npx custom-push init --backend-only
+npx pushfire init --backend-only
 ```
 - **Detection**: Checks for `firebase-admin` in your `package.json`.
 - **Naming**: Generates `FCMHelper.js/ts` in `src/helper/`.
@@ -53,7 +53,7 @@ npx custom-push init --backend-only
 For projects requiring both frontend and backend integration:
 
 ```bash
-npx custom-push init
+npx pushfire init
 ```
 
 ## Firebase Setup Instructions
@@ -126,21 +126,21 @@ npm install
 npm run build
 
 # Run CLI
-npx custom-push init
+npx pushfire init
 ```
 
 ## Troubleshooting Installation
 
 ### Common Issues
 
-**"command not found: custom-push"**
+**"command not found: pushfire"**
 ```bash
 # Use npx instead
-npx custom-push init
+npx pushfire init
 
 # Or reinstall globally
-npm uninstall -g custom-push
-npm install -g custom-push
+npm uninstall -g pushfire
+npm install -g pushfire
 ```
 
 **"Permission denied"**
@@ -149,7 +149,7 @@ npm install -g custom-push
 sudo chown -R $(whoami) ~/.npm
 
 # Or use npx (no permissions needed)
-npx custom-push init
+npx pushfire init
 ```
 
 **"Node.js version too old"**
@@ -183,7 +183,7 @@ npm cache clean --force
 npm config set registry https://registry.npmjs.org/
 
 # Try again
-npx custom-push init
+npx pushfire init
 ```
 
 **Corporate proxy**
@@ -193,7 +193,7 @@ npm config set proxy http://proxy.company.com:8080
 npm config set https-proxy http://proxy.company.com:8080
 
 # Or use npx with proxy
-https_proxy=http://proxy.company.com:8080 npx custom-push init
+https_proxy=http://proxy.company.com:8080 npx pushfire init
 ```
 
 ## IDE Integration
@@ -218,10 +218,10 @@ Add to `.vscode/settings.json`:
 
 ### Test CLI Works
 ```bash
-npx custom-push --help
+npx pushfire --help
 # Should show CLI help
 
-npx custom-push init
+npx pushfire init
 # Should start the interactive setup
 ```
 

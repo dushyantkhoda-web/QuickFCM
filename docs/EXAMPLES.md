@@ -19,7 +19,7 @@ Simply wrap your application with the pre-configured provider and manager.
 
 ```tsx
 // layout.tsx or App.tsx
-import { CustomPushProvider } from 'custom-push';
+import { CustomPushProvider } from 'pushfire';
 import { pushConfig } from './src/NotificationHandler/pushConfig';
 import { PushNotificationManager } from './src/NotificationHandler/PushNotificationManager';
 
@@ -246,7 +246,7 @@ Wrap your entire application with the `<CustomPushProvider>` to enable the push 
 
 ```typescript
 // index.tsx / App.tsx
-import { CustomPushProvider } from 'custom-push';
+import { CustomPushProvider } from 'pushfire';
 
 const pushConfig = {
   apiKey: "your-api-key",
@@ -272,7 +272,7 @@ function Root() {
 Use the `usePushMessage` hook to trigger the permission prompt and access the FCM token.
 
 ```typescript
-import { usePushMessage } from 'custom-push';
+import { usePushMessage } from 'pushfire';
 
 export function SetupPush() {
   const { requestPermission, token, isSupported, isPermissionGranted } = usePushMessage();
@@ -325,7 +325,7 @@ In Next.js App Router, context providers must be Client Components. We recommend
 // components/PushProviderWrapper.tsx
 'use client';
 
-import { CustomPushProvider } from 'custom-push';
+import { CustomPushProvider } from 'pushfire';
 
 export function PushProviderWrapper({ children }: { children: React.ReactNode }) {
   const pushConfig = {
@@ -1037,4 +1037,4 @@ if (process.env.NODE_ENV === 'development') {
 }
 ```
 
-These examples cover various real-world scenarios and patterns for implementing push notifications with the custom-push CLI. Choose the patterns that best fit your application's needs.
+These examples cover various real-world scenarios and patterns for implementing push notifications with the pushfire CLI. Choose the patterns that best fit your application's needs.

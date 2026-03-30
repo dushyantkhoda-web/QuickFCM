@@ -1,12 +1,12 @@
-# Contributing to custom-push
+# Contributing to pushfire
 
-Thank you for considering contributing to `custom-push`! Here's how you can help.
+Thank you for considering contributing to `pushfire`! Here's how you can help.
 
 ## Development Setup
 
 ```bash
-git clone https://github.com/your-org/custom-push.git
-cd custom-push
+git clone https://github.com/your-org/pushfire.git
+cd pushfire
 npm install
 npm run dev    # watches and recompiles on change
 ```
@@ -14,7 +14,7 @@ npm run dev    # watches and recompiles on change
 ## Project Structure
 
 ```
-custom-push/
+pushfire/
 ├── bin/cli.js              ← Shebang entry point (CommonJS)
 ├── lib/
 │   ├── commands/           ← CLI command handlers (init)
@@ -46,7 +46,7 @@ Run the CLI locally against a test project:
 ```bash
 npm run build
 cd /path/to/test-react-project
-node /path/to/custom-push/bin/cli.js init
+node /path/to/pushfire/bin/cli.js init
 ```
 
 ## Submitting Changes

@@ -1,6 +1,6 @@
 /**
  * ──────────────────────────────────────────────────────────────────────────
- * CustomPush — FCM Notification Engine (Node.js)
+ * PushFire — FCM Notification Engine (Node.js)
  * ──────────────────────────────────────────────────────────────────────────
  * This helper provides a robust interface for sending push notifications 
  * using the Firebase Admin SDK.
@@ -11,7 +11,7 @@
  * 
  * sendPushNotification({
  *   token: 'YOUR_DEVICE_REGISTRATION_TOKEN',
- *   title: 'Hello from CustomPush!',
+ *   title: 'Hello from PushFire!',
  *   body: 'This is a test notification with static data.',
  *   route: '/dashboard'
  * }).then(response => console.log('Successfully sent:', response))
@@ -32,7 +32,7 @@ if (!admin.apps.length) {
       credential: admin.credential.cert(credentialsPath),
     });
   } catch (error) {
-    console.error(' [CustomPush] Failed to initialize Firebase Admin:', error.message);
+    console.error(' [PushFire] Failed to initialize Firebase Admin:', error.message);
     process.exit(1);
   }
 }
@@ -82,7 +82,7 @@ async function sendPushNotification(params) {
         title: title,
         body: body,
         icon: icon,
-        // Click action URL — CustomPush SW handles routing based on 'route'
+        // Click action URL — PushFire SW handles routing based on 'route'
         click_action: undefined, 
       },
       fcm_options: {
@@ -112,7 +112,7 @@ async function sendPushNotification(params) {
     const response = await admin.messaging().send(message);
     return response;
   } catch (error) {
-    console.error(' [CustomPush] FCM Send Error:', error);
+    console.error(' [PushFire] FCM Send Error:', error);
     throw error;
   }
 }

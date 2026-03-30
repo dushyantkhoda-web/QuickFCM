@@ -10,7 +10,7 @@ export async function printSummary(context: CLIContext): Promise<void> {
 
   logger.blank()
   logger.divider()
-  logger.info('  custom-push setup complete')
+  logger.info('  pushfire setup complete')
   logger.divider()
   logger.blank()
 
@@ -18,7 +18,7 @@ export async function printSummary(context: CLIContext): Promise<void> {
   if (mode === 'files') {
     logger.info(`  Mode: Standalone files (--files)`)
   } else {
-    logger.info(`  Mode: Library (import from 'custom-push')`)
+    logger.info(`  Mode: Library (import from 'pushfire')`)
   }
   logger.blank()
 
@@ -65,7 +65,7 @@ export async function printSummary(context: CLIContext): Promise<void> {
 
   if (context.backendOnly) {
     logger.raw(`  [1] Install the package (if not already):`)
-    logger.raw(`      npm install custom-push`)
+    logger.raw(`      npm install pushfire`)
     logger.blank()
 
     logger.raw(`  [2] Configure your notification settings in:`)
@@ -76,7 +76,7 @@ export async function printSummary(context: CLIContext): Promise<void> {
     logger.raw(`      // Express: app.use('/push', pushRoutes)`)
     logger.raw(`      // NestJS: Import PushModule into AppModule`)
     logger.blank()
-    
+
     logger.raw(`  [4] Send your first notification:`)
     logger.raw(`      import { sendPushNotification } from './push/pushHelper'`)
     logger.raw(`      await sendPushNotification(token, { title: 'Hello', body: 'World' })`)
@@ -97,11 +97,11 @@ export async function printSummary(context: CLIContext): Promise<void> {
     logger.blank()
   } else {
     logger.raw(`  [1] Install the package (if not already):`)
-    logger.raw(`      npm install custom-push`)
+    logger.raw(`      npm install pushfire`)
     logger.blank()
 
     logger.raw(`  [2] Wrap your app root (src/App.tsx or src/main.tsx):`)
-    logger.raw(`      import { CustomPushProvider } from 'custom-push'`)
+    logger.raw(`      import { CustomPushProvider } from 'pushfire'`)
     logger.raw(`      import { pushConfig } from './NotificationHandler/config'`)
     logger.blank()
     logger.raw(`      <CustomPushProvider config={pushConfig}>`)

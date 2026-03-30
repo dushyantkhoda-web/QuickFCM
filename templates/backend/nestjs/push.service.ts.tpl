@@ -5,7 +5,7 @@ const ourPkg = require('../our_pkg.json');
 
 /**
  * ──────────────────────────────────────────────────────────────────────────
- * CustomPush — FCM Notification Engine (NestJS Service)
+ * PushFire — FCM Notification Engine (NestJS Service)
  * ──────────────────────────────────────────────────────────────────────────
  * This service provides a robust interface for sending push notifications 
  * using the Firebase Admin SDK.
@@ -17,7 +17,7 @@ const ourPkg = require('../our_pkg.json');
  * 
  * this.pushService.sendNotification({
  *   token: 'YOUR_DEVICE_REGISTRATION_TOKEN',
- *   title: 'Hello from CustomPush!',
+ *   title: 'Hello from PushFire!',
  *   body: 'This is a test notification with static data.',
  *   route: '/dashboard'
  * }).then(response => console.log('Successfully sent:', response))
@@ -51,7 +51,7 @@ export class PushService implements OnModuleInit {
           credential: admin.credential.cert(credentialsPath),
         });
       } catch (error: any) {
-        console.error(' [CustomPush] Failed to initialize Firebase Admin:', error.message);
+        console.error(' [PushFire] Failed to initialize Firebase Admin:', error.message);
       }
     }
   }
@@ -116,7 +116,7 @@ export class PushService implements OnModuleInit {
       const response = await admin.messaging().send(message);
       return response;
     } catch (error) {
-      console.error(' [CustomPush] FCM Send Error:', error);
+      console.error(' [PushFire] FCM Send Error:', error);
       throw error;
     }
   }

@@ -2,8 +2,8 @@
 
 ## General Questions
 
-### What is custom-push?
-**custom-push** is a CLI tool that sets up Firebase Cloud Messaging push notifications in React projects with a single command. It handles all the complex setup including service workers, token management, and backend integration.
+### What is pushfire?
+**pushfire** is a CLI tool that sets up Firebase Cloud Messaging push notifications in React projects with a single command. It handles all the complex setup including service workers, token management, and backend integration.
 
 ### How is this different from Firebase's official setup?
 - **Simplicity**: One command vs manual setup
@@ -23,14 +23,14 @@ No! The CLI guides you through getting your Firebase configuration and handles a
 ### Do I need to install anything?
 No installation required! Use it directly with:
 ```bash
-npx custom-push init
+npx pushfire init
 ```
 
 ### Can I install it globally?
 Yes:
 ```bash
-npm install -g custom-push
-custom-push init
+npm install -g pushfire
+pushfire init
 ```
 
 ### What are the system requirements?
@@ -246,7 +246,7 @@ Use:
 ### How do I update the setup?
 Run the CLI again:
 ```bash
-npx custom-push init
+npx pushfire init
 ```
 It will detect existing files and offer to update them.
 
@@ -316,7 +316,7 @@ Check the GitHub repository for release schedules and roadmaps.
 If you couldn't find your answer here:
 
 1. **Check the documentation**: [README](./README.md), [API Reference](./API.md), [Examples](./EXAMPLES.md)
-2. **Search existing issues**: [GitHub Issues](https://github.com/your-repo/custom-push/issues)
+2. **Search existing issues**: [GitHub Issues](https://github.com/your-repo/pushfire/issues)
 3. **Create a new issue**: Include details about your setup and the problem
 4. **Community forums**: Stack Overflow, Discord, Reddit
 

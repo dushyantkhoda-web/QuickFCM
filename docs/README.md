@@ -1,11 +1,11 @@
 # Documentation Hub
 
-Welcome to the **Custom Push CLI** documentation. This toolkit provides a production-grade infrastructure for Firebase Cloud Messaging (FCM) push notifications.
+Welcome to the **Pushfire CLI** documentation. This toolkit provides a production-grade infrastructure for Firebase Cloud Messaging (FCM) push notifications.
 
 ## Quick Usage
 
 ```typescript
-import { usePushMessage } from 'custom-push';
+import { usePushMessage } from 'pushfire';
 
 function App() {
   const { requestPermission, token, messages } = usePushMessage();

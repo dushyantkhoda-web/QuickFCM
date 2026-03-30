@@ -35,7 +35,7 @@ export async function init(options: {
     logger.info(`   React: ${project.reactVersion ? `✓ v${project.reactVersion}` : '✗ not found'}`)
   }
   logger.info(`   Firebase: ${project.hasFirebase ? `✓ v${project.firebaseVersion}` : '✗ not found'}`)
-  
+
   if (!backendOnly) {
     const framework = project.isNextJs ? 'Next.js' : project.isVite ? 'Vite' : (project.reactVersion ? 'React' : 'none')
     logger.info(`   Framework: ${framework}`)
@@ -68,7 +68,7 @@ export async function init(options: {
     })
 
     if (!shouldContinue) {
-      logger.info('Fix the above and re-run: npx custom-push init')
+      logger.info('Fix the above and re-run: npx pushfire init')
       process.exit(0)
     }
 
@@ -143,6 +143,6 @@ export async function init(options: {
   }
 
   // ── Final summary ─────────────────────────────────────────────────────
-  successAnimation('CustomPush setup completed successfully!')
+  successAnimation('PushFire setup completed successfully!')
   printSummary(context)
 }

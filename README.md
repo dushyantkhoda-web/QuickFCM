@@ -1,18 +1,18 @@
-# Custom Push CLI
+# Pushfire CLI
 
 > Professional backend scaffolding for Firebase Cloud Messaging with seamless React integration
 
-[![npm version](https://badge.fury.io/js/custom-push.svg)](https://badge.fury.io/js/custom-push)
+[![npm version](https://badge.fury.io/js/pushfire.svg)](https://badge.fury.io/js/pushfire)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org)
 
-Custom Push is a production-grade CLI tool that scaffolds robust Firebase Cloud Messaging (FCM) infrastructure. It focuses on zero-fluff backend scaffolding (Express/NestJS) while providing an elite React package for frontend integration, including full support for **Next.js App Router**.
+Pushfire is a production-grade CLI tool that scaffolds robust Firebase Cloud Messaging (FCM) infrastructure. It focuses on zero-fluff backend scaffolding (Express/NestJS) while providing an elite React package for frontend integration, including full support for **Next.js App Router**.
 
 ## Features
 
 - **Zero-Config Frontend** - Automatically scaffolds a ready-to-use notification handler
 - **Backend-focused** - Scaffolds production-grade `FCMHelper` and routes
-- **Package-based Frontend** - Core logic handled by the `custom-push` React package
+- **Package-based Frontend** - Core logic handled by the `pushfire` React package
 - **App Router Support** - Fully compatible with Next.js 13+ (includes `'use client'` directives)
 - **Service Worker Engine** - Integrated on-demand service worker registration
 - **Proactive Validation** - Mandatory dependency checks for both `firebase-admin` and `firebase`
@@ -22,14 +22,14 @@ Custom Push is a production-grade CLI tool that scaffolds robust Firebase Cloud 
 
 ### 1. Initialize
 ```bash
-npx custom-push init
+npx pushfire init
 ```
 
 ### 2. Wrap your application (Recommended)
 The CLI automatically generates a `src/NotificationHandler/` directory. Use it to wrap your app:
 
 ```tsx
-import { CustomPushProvider } from 'custom-push';
+import { CustomPushProvider } from 'pushfire';
 import { pushConfig } from './src/NotificationHandler/pushConfig';
 import { PushNotificationManager } from './src/NotificationHandler/PushNotificationManager';
 
@@ -53,12 +53,12 @@ For developers who need full control or prefer not to use the scaffolded handler
 
 ### 1. Install the package
 ```bash
-npm install custom-push
+npm install pushfire
 ```
 
 ### 2. Manual Config
 ```typescript
-import { CustomPushProvider } from 'custom-push';
+import { CustomPushProvider } from 'pushfire';
 
 const pushConfig = {
   apiKey: "your-api-key",
