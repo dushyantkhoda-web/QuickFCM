@@ -1,4 +1,4 @@
-# 🚀 Quick Usage Guide for pushfire
+#  Quick Usage Guide for QuickFCM
 
 To complete your push notification setup, follow these steps:
 
@@ -9,7 +9,7 @@ Add the environment variables displayed in the CLI to your `.env` file. Do NOT c
 In your `src/App.tsx` or `src/main.tsx`:
 
 ```tsx
-import { CustomPushProvider } from 'pushfire'
+import { CustomPushProvider } from 'quick-fcm'
 import { pushConfig } from './NotificationHandler/config'
 
 function App() {
@@ -25,7 +25,7 @@ function App() {
 Use the `usePushMessage` hook to request permission and handle messages:
 
 ```tsx
-import { usePushMessage } from 'pushfire'
+import { usePushMessage } from 'quick-fcm'
 
 function NotificationButton() {
   const { messages, sendMessage, requestPermission } = usePushMessage()
@@ -48,7 +48,7 @@ function NotificationButton() {
 If you need the FCM token directly:
 
 ```tsx
-import { getPushToken } from 'pushfire'
+import { getPushToken } from 'quick-fcm'
 import { pushConfig } from './NotificationHandler/config'
 
 const token = await getPushToken(pushConfig)

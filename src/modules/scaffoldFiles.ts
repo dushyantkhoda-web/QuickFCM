@@ -25,14 +25,14 @@ async function readTemplate(name: string, templatePath: string): Promise<string>
   } catch (err: any) {
     throw new Error(
       `Template "${name}" not found at: ${templatePath}\n` +
-      '  → Try reinstalling pushfire: npm install -g pushfire@latest'
+      '  → Try reinstalling QuickFCM: npm install -g quick-fcm@latest'
     )
   }
 }
 
 /**
  * Scaffolds standalone push notification files into src/push-notification/.
- * Used when --files flag is provided. These files do NOT depend on the pushfire
+ * Used when --files flag is provided. These files do NOT depend on the QuickFCM
  * npm package at runtime — they import directly from firebase.
  */
 export async function scaffoldFiles(context: CLIContext): Promise<ScaffoldedFile[]> {

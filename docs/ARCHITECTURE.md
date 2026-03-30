@@ -2,11 +2,11 @@
 
 ##  New Architecture: Backend-Focused with Package-based Frontend
 
-The pushfire CLI has evolved to focus on backend scaffolding while the frontend is handled by the `pushfire` npm package.
+The quick-fcm CLI has evolved to focus on backend scaffolding while the frontend is handled by the `quick-fcm` npm package.
 
 ##  Components
 
-### 1. CLI Tool (`pushfire`)
+### 1. CLI Tool (`quick-fcm`)
 **Purpose**: Backend scaffolding and configuration generation
 
 **Default Behavior**:
@@ -18,29 +18,29 @@ The pushfire CLI has evolved to focus on backend scaffolding while the frontend 
 **Commands**:
 ```bash
 # Default: Backend scaffolding + package instructions
-npx pushfire init
+npx quick-fcm init
 
 # Backend only (no frontend mentions)
-npx pushfire init --backend-only
+npx quick-fcm init --backend-only
 
 # Full setup (backend + frontend boilerplate)
-npx pushfire init --generate-frontend
+npx quick-fcm init --generate-frontend
 
 # Generate only service worker
-npx pushfire generate-service-worker
+npx quick-fcm generate-service-worker
 ```
 
-### 2. Frontend Package (`pushfire`)
+### 2. Frontend Package (`quick-fcm`)
 **Purpose**: Provides all frontend functionality as an npm package
 
 **Installation**:
 ```bash
-npm install pushfire
+npm install quick-fcm
 ```
 
 **Usage**:
 ```typescript
-import { usePush } from 'pushfire'
+import { usePush } from 'quick-fcm'
 
 function App() {
   usePush({
@@ -68,7 +68,7 @@ function App() {
 
 ### Old Workflow (CLI generates everything)
 ```bash
-npx pushfire init
+npx quick-fcm init
 #  Generates backend + frontend files
 #  User integrates generated frontend code
 ```
@@ -76,18 +76,18 @@ npx pushfire init
 ### New Workflow (Backend-focused)
 ```bash
 # Step 1: Backend setup
-npx pushfire init
+npx quick-fcm init
 #  Generates backend scaffolding only
 #  Shows package installation instructions
 
 # Step 2: Frontend integration
-npm install pushfire
+npm install quick-fcm
 #  Import and configure in app
 ```
 
 ### Optional Frontend Generation
 ```bash
-npx pushfire init --generate-frontend
+npx quick-fcm init --generate-frontend
 #  Generates backend + frontend boilerplate
 #  For users who prefer generated files
 ```
@@ -133,7 +133,7 @@ When a file collision occurs (e.g., `FCMHelper.js` already exists), the CLI offe
 ### Package-based Frontend (Recommended)
 ```
 your-project/
-├── node_modules/pushfire/       # Runtime logic
+├── node_modules/quick-fcm/       # Runtime logic
 ├── public/firebase-messaging-sw.js # Service worker
 └── src/NotificationHandler/   # Zero-Config Setup
     ├── pushConfig.ts               # Auto-syncing configuration
@@ -177,28 +177,28 @@ your-project/
 
 ### 1. **Backend Developers**
 ```bash
-npx pushfire init --backend-only
+npx quick-fcm init --backend-only
 # Focus on backend API development
 # Frontend team handles package integration
 ```
 
 ### 2. **Full-stack Developers**
 ```bash
-npx pushfire init
+npx quick-fcm init
 # Get backend scaffolding + package instructions
 # Clean, minimal frontend integration
 ```
 
 ### 3. **Teams Wanting Full Control**
 ```bash
-npx pushfire init --generate-frontend
+npx quick-fcm init --generate-frontend
 # Get complete boilerplate for customization
 # Maximum control over implementation
 ```
 
 ### 4. **Service Worker Only**
 ```bash
-npx pushfire generate-service-worker
+npx quick-fcm generate-service-worker
 # Just need the service worker file
 # Already have custom frontend implementation
 ```
@@ -233,10 +233,10 @@ npx pushfire generate-service-worker
 
 | Scenario | Recommended Approach |
 |----------|---------------------|
-| New project | `npx pushfire init` + package |
-| Backend-only focus | `npx pushfire init --backend-only` |
-| Need full control | `npx pushfire init --generate-frontend` |
-| Service worker only | `npx pushfire generate-service-worker` |
+| New project | `npx quick-fcm init` + package |
+| Backend-only focus | `npx quick-fcm init --backend-only` |
+| Need full control | `npx quick-fcm init --generate-frontend` |
+| Service worker only | `npx quick-fcm generate-service-worker` |
 | Large team collaboration | Package-based approach |
 | Rapid prototyping | Generated frontend approach |
 

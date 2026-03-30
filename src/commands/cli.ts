@@ -5,8 +5,8 @@ import { generateServiceWorker } from './generateServiceWorker'
 import { header, footer, showError, showWarning } from '../utils/branding'
 
 program
-  .name('pushfire')
-  .description('PushFire - Firebase push notifications setup tool')
+  .name('quick-fcm')
+  .description('QuickFCM - Firebase push notifications setup tool')
   .version(packageJson.version)
 
 // Main init command
@@ -17,19 +17,19 @@ program
   .option('--generate-frontend', 'Generate frontend boilerplate files')
   .option('--backend-only', 'Skip frontend completely, backend only')
   .action(async (options) => {
-    header('PushFire', 'Firebase Push Notifications Setup Tool')
+    header('QuickFCM', 'Firebase Push Notifications Setup Tool')
 
     try {
       await init(options)
-      footer('PushFire setup completed successfully')
+      footer('QuickFCM setup completed successfully')
     } catch (error: any) {
       if (error.name === 'ExitPromptError' || error.message?.includes('User force closed')) {
         showWarning('Setup Cancelled', 'Setup was cancelled by user')
-        footer('Run again anytime with: npx pushfire init')
+        footer('Run again anytime with: npx quick-fcm init')
         process.exit(0)
       } else {
         showError('Setup Failed', error.message || 'Unknown error occurred', 'Check troubleshooting guide for help')
-        footer('Need help? https://github.com/dushyantkhoda-web/pushfire/issues')
+        footer('Need help? https://github.com/dushyantkhoda-web/QuickFCM/issues')
         process.exit(1)
       }
     }
@@ -41,7 +41,7 @@ program
   .alias('generate-sw')
   .description('Generate only the service worker file')
   .action(async () => {
-    header('PushFire Service Worker Generator')
+    header('QuickFCM Service Worker Generator')
 
     try {
       await generateServiceWorker()
@@ -49,7 +49,7 @@ program
     } catch (error: any) {
       if (error.name === 'ExitPromptError' || error.message?.includes('User force closed')) {
         showWarning('Generation Cancelled', 'Service worker generation was cancelled')
-        footer('Run again anytime with: npx pushfire generate-service-worker')
+        footer('Run again anytime with: npx quick-fcm generate-service-worker')
         process.exit(0)
       } else {
         showError('Generation Failed', error.message || 'Failed to generate service worker', 'Ensure Firebase configuration is ready')
@@ -62,7 +62,7 @@ program
 // Handle uncaught promise rejections
 process.on('unhandledRejection', (reason) => {
   showError('Unexpected Error', reason instanceof Error ? reason.message : String(reason), 'Please report this issue to help us improve')
-  footer('Report: https://github.com/dushyantkhoda-web/pushfire/issues')
+  footer('Report: https://github.com/dushyantkhoda-web/QuickFCM/issues')
   process.exit(1)
 })
 

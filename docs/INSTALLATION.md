@@ -6,23 +6,23 @@
 No installation required - runs directly from npm:
 
 ```bash
-npx pushfire init
+npx quick-fcm init
 ```
 
 ### Option 2: Global Install
 Install globally for use in any project:
 
 ```bash
-npm install -g pushfire
-pushfire init
+npm install -g quick-fcm
+quick-fcm init
 ```
 
 ### Option 3: Local Dev Install
 Install as dev dependency in your project:
 
 ```bash
-npm install --save-dev pushfire
-npx pushfire init
+npm install --save-dev quick-fcm
+npx quick-fcm init
 ```
 
 ## System Requirements
@@ -43,7 +43,7 @@ npx pushfire init
 If you only need a notification engine for your server:
 
 ```bash
-npx pushfire init --backend-only
+npx quick-fcm init --backend-only
 ```
 - **Detection**: Checks for `firebase-admin` in your `package.json`.
 - **Naming**: Generates `FCMHelper.js/ts` in `src/helper/`.
@@ -53,7 +53,7 @@ npx pushfire init --backend-only
 For projects requiring both frontend and backend integration:
 
 ```bash
-npx pushfire init
+npx quick-fcm init
 ```
 
 ## Firebase Setup Instructions
@@ -126,21 +126,21 @@ npm install
 npm run build
 
 # Run CLI
-npx pushfire init
+npx quick-fcm init
 ```
 
 ## Troubleshooting Installation
 
 ### Common Issues
 
-**"command not found: pushfire"**
+**"command not found: QuickFCM"**
 ```bash
 # Use npx instead
-npx pushfire init
+npx quick-fcm init
 
 # Or reinstall globally
-npm uninstall -g pushfire
-npm install -g pushfire
+npm uninstall -g quick-fcm
+npm install -g quick-fcm
 ```
 
 **"Permission denied"**
@@ -149,7 +149,7 @@ npm install -g pushfire
 sudo chown -R $(whoami) ~/.npm
 
 # Or use npx (no permissions needed)
-npx pushfire init
+npx quick-fcm init
 ```
 
 **"Node.js version too old"**
@@ -183,7 +183,7 @@ npm cache clean --force
 npm config set registry https://registry.npmjs.org/
 
 # Try again
-npx pushfire init
+npx quick-fcm init
 ```
 
 **Corporate proxy**
@@ -193,7 +193,7 @@ npm config set proxy http://proxy.company.com:8080
 npm config set https-proxy http://proxy.company.com:8080
 
 # Or use npx with proxy
-https_proxy=http://proxy.company.com:8080 npx pushfire init
+https_proxy=http://proxy.company.com:8080 npx quick-fcm init
 ```
 
 ## IDE Integration
@@ -218,10 +218,10 @@ Add to `.vscode/settings.json`:
 
 ### Test CLI Works
 ```bash
-npx pushfire --help
+npx quick-fcm --help
 # Should show CLI help
 
-npx pushfire init
+npx quick-fcm init
 # Should start the interactive setup
 ```
 

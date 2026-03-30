@@ -11,12 +11,12 @@
 
 ##  CLI Commands
 
-### pushfire init`
+### quick-fcm init`
 
 Main command to set up push notifications in your project.
 
 ```bash
-npx pushfire init [options]
+npx quick-fcm init [options]
 ```
 
 #### Options
@@ -106,7 +106,7 @@ interface OurPackageJson {
 The root component that handles Firebase initialization, token management, and Safari-specific permission logic.
 
 ```typescript
-import { CustomPushProvider } from 'pushfire';
+import { CustomPushProvider } from 'quick-fcm';
 
 const pushConfig = {
   apiKey: "your-api-key",

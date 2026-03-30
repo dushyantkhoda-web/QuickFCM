@@ -4,17 +4,17 @@
 
 ### Installation Issues
 
-#### command not found: pushfire"
+#### command not found: QuickFCM"
 **Problem**: CLI not recognized after global install.
 
 **Solutions**:
 ```bash
 # Use npx instead (recommended)
-npx pushfire init
+npx quick-fcm init
 
 # Reinstall globally
-npm uninstall -g pushfire
-npm install -g pushfire
+npm uninstall -g quick-fcm
+npm install -g quick-fcm
 
 # Check npm global path
 npm config get prefix
@@ -31,7 +31,7 @@ export PATH=$(npm config get prefix)/bin:$PATH
 sudo chown -R $(whoami) ~/.npm
 
 # Or use npx (no permissions needed)
-npx pushfire init
+npx quick-fcm init
 
 # Or use node version manager (nvm)
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
@@ -51,7 +51,7 @@ ls package.json  # Should exist
 # Or create new React project
 npx create-react-app my-app
 cd my-app
-npx pushfire init
+npx quick-fcm init
 ```
 
 ### Firebase Configuration Issues
@@ -344,11 +344,11 @@ Enable debug logging to troubleshoot issues:
 
 ```bash
 # Enable debug mode
-DEBUG=pushfire:* npx pushfire init
+DEBUG=quick-fcm:* npx quick-fcm init
 
 # Or set environment variable
-export DEBUG=pushfire:*
-npx pushfire init
+export DEBUG=quick-fcm:*
+npx quick-fcm init
 ```
 
 ### Browser Console Debugging
@@ -384,7 +384,7 @@ If you're still stuck:
 1. **Check the logs**:
    ```bash
    # CLI logs
-   npx pushfire init --verbose
+   npx quick-fcm init --verbose
    
    # Browser console
    # Open developer tools and check for errors
@@ -392,7 +392,7 @@ If you're still stuck:
 
 2. **Create minimal reproduction**:
    - Create fresh React project
-   - Run pushfire init
+   - Run quick-fcm init
    - Test basic functionality
 
 3. **File an issue**:
@@ -402,7 +402,7 @@ If you're still stuck:
 
 4. **Community resources**:
    - GitHub Issues
-   - Stack Overflow with `pushfire` tag
+   - Stack Overflow with `QuickFCM` tag
    - Firebase documentation
 
 ## Advanced Troubleshooting
@@ -450,7 +450,7 @@ For automated deployments:
   run: npm ci
   
 - name: Setup push notifications
-  run: npx pushfire init --yes
+  run: npx quick-fcm init --yes
   env:
     FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
     #  other env vars

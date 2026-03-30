@@ -19,7 +19,7 @@ Simply wrap your application with the pre-configured provider and manager.
 
 ```tsx
 // layout.tsx or App.tsx
-import { CustomPushProvider } from 'pushfire';
+import { CustomPushProvider } from 'quick-fcm';
 import { pushConfig } from './src/NotificationHandler/pushConfig';
 import { PushNotificationManager } from './src/NotificationHandler/PushNotificationManager';
 
@@ -43,7 +43,7 @@ useEffect(() => {
   if (messages.length > 0) {
     const lastMessage = messages[messages.length - 1];
     
-    // 🚀 REPLACE THIS with Sonner, React Hot Toast, etc.
+    //  REPLACE THIS with Sonner, React Hot Toast, etc.
     toast(lastMessage.title, { description: lastMessage.body });
   }
 }, [messages]);
@@ -246,7 +246,7 @@ Wrap your entire application with the `<CustomPushProvider>` to enable the push 
 
 ```typescript
 // index.tsx / App.tsx
-import { CustomPushProvider } from 'pushfire';
+import { CustomPushProvider } from 'quick-fcm';
 
 const pushConfig = {
   apiKey: "your-api-key",
@@ -272,7 +272,7 @@ function Root() {
 Use the `usePushMessage` hook to trigger the permission prompt and access the FCM token.
 
 ```typescript
-import { usePushMessage } from 'pushfire';
+import { usePushMessage } from 'quick-fcm';
 
 export function SetupPush() {
   const { requestPermission, token, isSupported, isPermissionGranted } = usePushMessage();
@@ -325,7 +325,7 @@ In Next.js App Router, context providers must be Client Components. We recommend
 // components/PushProviderWrapper.tsx
 'use client';
 
-import { CustomPushProvider } from 'pushfire';
+import { CustomPushProvider } from 'quick-fcm';
 
 export function PushProviderWrapper({ children }: { children: React.ReactNode }) {
   const pushConfig = {
@@ -1037,4 +1037,4 @@ if (process.env.NODE_ENV === 'development') {
 }
 ```
 
-These examples cover various real-world scenarios and patterns for implementing push notifications with the pushfire CLI. Choose the patterns that best fit your application's needs.
+These examples cover various real-world scenarios and patterns for implementing push notifications with the QuickFCM CLI. Choose the patterns that best fit your application's needs.

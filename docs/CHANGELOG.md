@@ -22,7 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## 1.0.0] - 2024-03-26
 
 ### Added
-- Initial release of pushfire CLI
+- Initial release of QuickFCM CLI
 - Smart project detection (TypeScript/JavaScript, React, Express/NestJS)
 - Interactive prompts with maximum 4 questions
 - Version validation for Firebase and React compatibility
@@ -169,7 +169,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Support
 
-For bug reports and feature requests, please use the [GitHub Issue Tracker](https://github.com/your-username/pushfire/issues).
+For bug reports and feature requests, please use the [GitHub Issue Tracker](https://github.com/your-username/QuickFCM/issues).
 
 For questions and support, please check our [FAQ](./docs/FAQ.md) or [Documentation](./docs/README.md).
 

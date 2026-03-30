@@ -10,7 +10,7 @@ export async function printSummary(context: CLIContext): Promise<void> {
 
   logger.blank()
   logger.divider()
-  logger.info('  pushfire setup complete')
+  logger.info('  QuickFCM setup complete')
   logger.divider()
   logger.blank()
 
@@ -18,7 +18,7 @@ export async function printSummary(context: CLIContext): Promise<void> {
   if (mode === 'files') {
     logger.info(`  Mode: Standalone files (--files)`)
   } else {
-    logger.info(`  Mode: Library (import from 'pushfire')`)
+    logger.info(`  Mode: Library (import from 'quick-fcm')`)
   }
   logger.blank()
 
@@ -65,7 +65,7 @@ export async function printSummary(context: CLIContext): Promise<void> {
 
   if (context.backendOnly) {
     logger.raw(`  [1] Install the package (if not already):`)
-    logger.raw(`      npm install pushfire`)
+    logger.raw(`      npm install quick-fcm`)
     logger.blank()
 
     logger.raw(`  [2] Configure your notification settings in:`)
@@ -97,11 +97,11 @@ export async function printSummary(context: CLIContext): Promise<void> {
     logger.blank()
   } else {
     logger.raw(`  [1] Install the package (if not already):`)
-    logger.raw(`      npm install pushfire`)
+    logger.raw(`      npm install quick-fcm`)
     logger.blank()
 
     logger.raw(`  [2] Wrap your app root (src/App.tsx or src/main.tsx):`)
-    logger.raw(`      import { CustomPushProvider } from 'pushfire'`)
+    logger.raw(`      import { CustomPushProvider } from 'quick-fcm'`)
     logger.raw(`      import { pushConfig } from './NotificationHandler/config'`)
     logger.blank()
     logger.raw(`      <CustomPushProvider config={pushConfig}>`)

@@ -1,7 +1,7 @@
 import chalk from 'chalk'
 import ora, { Ora } from 'ora'
 
-// PushFire Brand Colors
+// QuickFCM Brand Colors
 export const colors = {
   primary: '#7C3AED',      // Purple
   secondary: '#EC4899',    // Pink  
@@ -50,12 +50,12 @@ export function createSpinner(text?: string, type: keyof typeof spinners = 'dots
 // Brand messages
 export const messages = {
   welcome: `
-${brand.logo('PushFire')}
+${brand.logo('QuickFCM')}
 ${brand.subtle('Firebase Push Notifications Setup Tool')}
 ${brand.muted('─'.repeat(50))}
   `,
 
-  initializing: brand.info('Initializing PushFire...'),
+  initializing: brand.info('Initializing QuickFCM...'),
   detecting: brand.info('Analyzing project structure...'),
   validating: brand.info('Checking dependencies...'),
   configuring: brand.info('Setting up push notifications...'),
@@ -63,7 +63,7 @@ ${brand.muted('─'.repeat(50))}
   finalizing: brand.info('Finalizing configuration...'),
 
   success: {
-    initialized: brand.success('PushFire initialized successfully'),
+    initialized: brand.success('QuickFCM initialized successfully'),
     detected: brand.success('Project detected and configured'),
     validated: brand.success('Dependencies validated'),
     configured: brand.success('Push notifications configured'),
@@ -87,8 +87,8 @@ ${brand.muted('─'.repeat(50))}
   },
 
   next: {
-    install: brand.info(`Install frontend package: ${brand.code('npm install pushfire')}`),
-    import: brand.info(`Import in your app: ${brand.code('import { CustomPushProvider } from "pushfire"')}`),
+    install: brand.info(`Install frontend package: ${brand.code('npm install quick-fcm')}`),
+    import: brand.info(`Import in your app: ${brand.code('import { CustomPushProvider } from "QuickFCM"')}`),
     wrap: brand.info(`Wrap your app: ${brand.code('<CustomPushProvider><YourApp /></CustomPushProvider>')}`),
     test: brand.info(`Test notifications from Firebase Console`)
   }
@@ -124,7 +124,7 @@ export function footer(message?: string): void {
     console.log(brand.info(message))
   }
   divider()
-  console.log(brand.muted('Made with care by PushFire Team'))
+  console.log(brand.muted('Made with care by QuickFCM Team'))
   console.log()
 }
 

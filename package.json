@@ -1,5 +1,5 @@
 {
-  "name": "pushfire",
+  "name": "quick-fcm",
   "version": "1.0.0",
   "description": "All-in-one push notification package — npm library + CLI scaffolder with Safari support",
   "main": "dist/lib/index.js",
@@ -12,7 +12,7 @@
     }
   },
   "bin": {
-    "pushfire": "./bin/cli.js"
+    "quick-fcm": "./bin/cli.js"
   },
   "files": [
     "bin",
@@ -73,16 +73,16 @@
     "scaffolder",
     "nestjs",
     "express",
-    "pushfire"
+    "QuickFCM"
   ],
-  "author": "pushfire Team",
+  "author": "QuickFCM Team",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/dushyantkhoda-web/pushfire"
+    "url": "https://github.com/dushyantkhoda-web/QuickFCM"
   },
-  "homepage": "https://github.com/dushyantkhoda-web/pushfire#readme",
+  "homepage": "https://github.com/dushyantkhoda-web/QuickFCM#readme",
   "bugs": {
-    "url": "https://github.com/dushyantkhoda-web/pushfire/issues"
+    "url": "https://github.com/dushyantkhoda-web/QuickFCM/issues"
   }
 }

@@ -1,12 +1,12 @@
-# Contributing to pushfire
+# Contributing to QuickFCM
 
-Thank you for considering contributing to `pushfire`! Here's how you can help.
+Thank you for considering contributing to `QuickFCM`! Here's how you can help.
 
 ## Development Setup
 
 ```bash
-git clone https://github.com/your-org/pushfire.git
-cd pushfire
+git clone https://github.com/your-org/QuickFCM.git
+cd QuickFCM
 npm install
 npm run dev    # watches and recompiles on change
 ```
@@ -14,7 +14,7 @@ npm run dev    # watches and recompiles on change
 ## Project Structure
 
 ```
-pushfire/
+QuickFCM/
 ├── bin/cli.js              ← Shebang entry point (CommonJS)
 ├── lib/
 │   ├── commands/           ← CLI command handlers (init)
@@ -46,7 +46,7 @@ Run the CLI locally against a test project:
 ```bash
 npm run build
 cd /path/to/test-react-project
-node /path/to/pushfire/bin/cli.js init
+node /path/to/QuickFCM/bin/cli.js init
 ```
 
 ## Submitting Changes

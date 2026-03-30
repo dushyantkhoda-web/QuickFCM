@@ -8,11 +8,11 @@ import { CONFIG_FILENAME, FIREBASE_VERSION_RANGE, REACT_VERSION_RANGE, PACKAGE_R
 export async function generateConfig(context: CLIContext): Promise<void> {
   const { project, answers } = context
 
-  // Read CLI package.json for pushFireVersion
-  let pushFireVersion = '1.1.0'
+  // Read CLI package.json for QuickFCMVersion
+  let QuickFCMVersion = '1.1.0'
   try {
     const cliPkg = await readJson<Record<string, any>>(path.join(PACKAGE_ROOT, 'package.json'))
-    pushFireVersion = cliPkg.version || '1.1.0'
+    QuickFCMVersion = cliPkg.version || '1.1.0'
   } catch {
     // fallback
   }
@@ -28,7 +28,7 @@ export async function generateConfig(context: CLIContext): Promise<void> {
   const config = {
     version: '1.0.0',
     generatedAt: now,
-    pushFireVersion,
+    QuickFCMVersion,
     stack: {
       language: project.language,
       scope: project.scope,
@@ -73,7 +73,7 @@ export async function generateConfig(context: CLIContext): Promise<void> {
 
   // Run conflict check
   const resolved = await checkConflicts(
-    [{ path: filePath, content, description: 'pushfire configuration' }],
+    [{ path: filePath, content, description: 'QuickFCM configuration' }],
     project
   )
 
@@ -93,7 +93,7 @@ export async function generateConfig(context: CLIContext): Promise<void> {
           absolutePath: filePath,
           relativePath: CONFIG_FILENAME,
           status: 'created',
-          description: 'pushfire configuration',
+          description: 'QuickFCM configuration',
         })
       } catch (writeErr: any) {
         logger.error(`✖  Failed to write ${CONFIG_FILENAME}: ${writeErr.message}`)

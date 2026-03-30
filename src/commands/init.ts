@@ -68,7 +68,7 @@ export async function init(options: {
     })
 
     if (!shouldContinue) {
-      logger.info('Fix the above and re-run: npx pushfire init')
+      logger.info('Fix the above and re-run: npx quick-fcm init')
       process.exit(0)
     }
 
@@ -143,6 +143,6 @@ export async function init(options: {
   }
 
   // ── Final summary ─────────────────────────────────────────────────────
-  successAnimation('PushFire setup completed successfully!')
+  successAnimation('QuickFCM setup completed successfully!')
   printSummary(context)
 }

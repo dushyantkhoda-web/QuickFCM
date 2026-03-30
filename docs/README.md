@@ -1,11 +1,11 @@
 # Documentation Hub
 
-Welcome to the **Pushfire CLI** documentation. This toolkit provides a production-grade infrastructure for Firebase Cloud Messaging (FCM) push notifications.
+Welcome to the **QuickFCM CLI** documentation. This toolkit provides a production-grade infrastructure for Firebase Cloud Messaging (FCM) push notifications.
 
 ## Quick Usage
 
 ```typescript
-import { usePushMessage } from 'pushfire';
+import { usePushMessage } from 'quick-fcm';
 
 function App() {
   const { requestPermission, token, messages } = usePushMessage();
