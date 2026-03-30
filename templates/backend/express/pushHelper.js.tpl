@@ -2,7 +2,7 @@
  * ──────────────────────────────────────────────────────────────────────────
  * QuickFCM — FCM Notification Engine (Node.js)
  * ──────────────────────────────────────────────────────────────────────────
- * This helper provides a robust interface for sending push notifications 
+ * This helper provides a secure interface for sending push notifications 
  * using the Firebase Admin SDK.
  * 
  * QUICK START (Test with static data):

@@ -7,7 +7,7 @@ const ourPkg = require('../our_pkg.json');
  * ──────────────────────────────────────────────────────────────────────────
  * QuickFCM — FCM Notification Engine (NestJS Service)
  * ──────────────────────────────────────────────────────────────────────────
- * This service provides a robust interface for sending push notifications 
+ * This service provides a secure interface for sending push notifications 
  * using the Firebase Admin SDK.
  * 
  * QUICK START (Test with static data):
