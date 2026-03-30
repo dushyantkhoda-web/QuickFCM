@@ -6,7 +6,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org)
 
-Pushfire is a production-grade CLI tool that scaffolds secure Firebase Cloud Messaging (FCM) infrastructure. It focuses on zero-fluff backend scaffolding (Express/NestJS) while providing an elite React package for frontend integration, including full support for **Next.js App Router**.
+Pushfire is a production-grade CLI tool that scaffolds secure Firebase Cloud Messaging (FCM) infrastructure. It focuses on zero-fluff backend scaffolding (Express/NestJS) while providing an React package for frontend integration, including full support for **Next.js App Router**.
 
 ## Features
 
