@@ -152,7 +152,7 @@ export async function runPrompts(project: ProjectInfo, options: { backendOnly?: 
 
     // Ask FIRST — before showing or requiring anything from the user
     const saveEnv = await confirm({
-      message: 'Save Firebase config to .env automatically?',
+      message: '.env file: save Firebase config automatically? (creates it if missing)',
       default: true,
     })
 
@@ -195,7 +195,8 @@ export async function runPrompts(project: ProjectInfo, options: { backendOnly?: 
 
         const finalContent = [...existingLines, ...toAppend].join('\n') + '\n'
         await writeFile(envPath, finalContent)
-        logger.success(`✓  .env updated (${fcmKeys.length} keys) — prefix: ${prefixLabel}`)
+        const envAction = envExists ? 'updated' : 'created'
+        logger.success(`✓  .env ${envAction} (${fcmKeys.length} keys) — prefix: ${prefixLabel}`)
 
         // Ensure .env is in .gitignore
         const gitignorePath = path.join(project.rootDir, GITIGNORE_FILENAME)

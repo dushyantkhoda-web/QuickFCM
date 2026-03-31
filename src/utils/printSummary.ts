@@ -98,7 +98,7 @@ export async function printSummary(context: CLIContext): Promise<void> {
     logger.blank()
   }
 
-  logger.raw(`  [${context.backendOnly ? 4 : 4}] Add /public/icon.png (displayed on push notifications)`)
+  // logger.raw(`  [${context.backendOnly ? 4 : 4}] Add /public/icon.png (displayed on push notifications)`)
   logger.blank()
 
   if (project.scope === 'both' && !context.backendOnly) {
