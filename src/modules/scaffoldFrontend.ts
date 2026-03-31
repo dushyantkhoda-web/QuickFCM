@@ -14,6 +14,7 @@ import {
   FRONTEND_MANAGER_TPL,
   FRONTEND_MANAGER_JSX,
   FRONTEND_CONFIG_TPL,
+  FRONTEND_CONFIG_JS,
   FRONTEND_USAGE_TPL,
 } from '../constants'
 
@@ -66,12 +67,14 @@ export async function scaffoldFrontend(context: CLIContext): Promise<ScaffoldedF
 
   // ── 3. Zero-Config Handler Files ──────────────────────────────────────
   const isTs = project.language === 'typescript'
-  const envPrefix = project.isNextJs ? 'NEXT_PUBLIC_' : ''
 
   // Manager: .tsx for TS, .jsx for JS
+  // Config:  .ts  for TS, .js  for JS (both read from quickfcm.config.json)
   const managerTplName = isTs ? FRONTEND_MANAGER_TPL : FRONTEND_MANAGER_JSX
+  const configTplName  = isTs ? FRONTEND_CONFIG_TPL  : FRONTEND_CONFIG_JS
+
   const managerTemplate = await readFile(path.join(TEMPLATES_DIR, managerTplName))
-  const configTemplate  = await readFile(path.join(TEMPLATES_DIR, FRONTEND_CONFIG_TPL))
+  const configTemplate  = await readFile(path.join(TEMPLATES_DIR, configTplName))
   const usageTemplate   = await readFile(path.join(TEMPLATES_DIR, FRONTEND_USAGE_TPL))
 
   // Output extensions
@@ -82,9 +85,9 @@ export async function scaffoldFrontend(context: CLIContext): Promise<ScaffoldedF
   const configPath  = path.join(handlerDir, `config.${configExt}`)
   const usagePath   = path.join(handlerDir, 'USAGE.md')
 
-  // Template vars for pushConfig — aligns with Phase 2 FCM_ key names
+  // Template vars — SW_FILENAME needed by config template for serviceWorkerPath
   const configVars: Record<string, string> = {
-    ENV_PREFIX: envPrefix,
+    SW_FILENAME: swFilename,
   }
 
   // ── Run conflict checks ───────────────────────────────────────────────

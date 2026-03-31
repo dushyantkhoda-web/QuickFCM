@@ -1,9 +1,9 @@
 import * as path from 'path'
 import { CLIContext } from '../types'
 import { logger } from '../utils/logger'
-import { readJson, writeJson } from '../utils/fileUtils'
+import { readJson, writeJson, readFile, appendToFile } from '../utils/fileUtils'
 import { checkConflicts } from '../core/checkConflicts'
-import { CONFIG_FILENAME, FIREBASE_VERSION_RANGE, REACT_VERSION_RANGE, PACKAGE_ROOT } from '../constants'
+import { CONFIG_FILENAME, FIREBASE_VERSION_RANGE, REACT_VERSION_RANGE, PACKAGE_ROOT, GITIGNORE_FILENAME } from '../constants'
 
 export async function generateConfig(context: CLIContext): Promise<void> {
   const { project, answers } = context
@@ -95,6 +95,16 @@ export async function generateConfig(context: CLIContext): Promise<void> {
           status: 'created',
           description: 'QuickFCM configuration',
         })
+
+        // Add quickfcm.config.json to .gitignore
+        const gitignorePath = path.join(project.rootDir, GITIGNORE_FILENAME)
+        let gitignoreContent = ''
+        try { gitignoreContent = await readFile(gitignorePath) } catch { /* will be created */ }
+        const gitignoreLines = gitignoreContent.split('\n').map(l => l.trim())
+        if (!gitignoreLines.includes(CONFIG_FILENAME)) {
+          await appendToFile(gitignorePath, CONFIG_FILENAME)
+          logger.success(`✓  ${CONFIG_FILENAME} added to .gitignore`)
+        }
       } catch (writeErr: any) {
         logger.error(`✖  Failed to write ${CONFIG_FILENAME}: ${writeErr.message}`)
       }

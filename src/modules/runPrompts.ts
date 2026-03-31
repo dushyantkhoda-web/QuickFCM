@@ -1,14 +1,11 @@
-import { input, confirm } from '@inquirer/prompts'
-import * as path from 'path'
+import { input } from '@inquirer/prompts'
 import { ProjectInfo, UserAnswers, FirebaseWebConfig, BackendConfig } from '../types'
 import { logger } from '../utils/logger'
-import { writeFile, readFile, fileExists, appendToFile } from '../utils/fileUtils'
 import {
   FIREBASE_CONSOLE_URL,
   FIREBASE_MESSAGING_URL,
   FIREBASE_SERVICE_ACCOUNT_URL,
   VAPID_GENERATOR_URL,
-  GITIGNORE_FILENAME,
 } from '../constants'
 
 async function requiredInput(message: string): Promise<string> {
@@ -129,121 +126,6 @@ export async function runPrompts(project: ProjectInfo, options: { backendOnly?: 
     credentialsPath: null,
   }
 
-  // ── Determine env prefix based on detected framework ────────────────
-  // Next.js → NEXT_PUBLIC_, React (including Vite) → no prefix
-  const envPrefix = project.isNextJs ? 'NEXT_PUBLIC_' : ''
-  const prefixLabel = envPrefix || 'none'
-
-  // ── FCM key definitions (bare names — prefix applied at write time) ───
-  const fcmKeys: Array<{ bare: string; value: string }> = [
-    { bare: 'FCM_API_KEY', value: firebase.apiKey },
-    { bare: 'FCM_AUTH_DOMAIN', value: firebase.authDomain },
-    { bare: 'FCM_PROJECT_ID', value: firebase.projectId },
-    { bare: 'FCM_STORAGE_BUCKET', value: firebase.storageBucket },
-    { bare: 'FCM_MESSAGING_SENDER_ID', value: firebase.messagingSenderId },
-    { bare: 'FCM_APP_ID', value: firebase.appId },
-    { bare: 'FCM_VAPID_KEY', value: firebase.vapidKey },
-  ]
-
-  // ── Environment Variables — Only for frontend-enabled setups ─────────
-  if (apiKey && !backendOnly) {
-
-    logger.blank()
-
-    // Ask FIRST — before showing or requiring anything from the user
-    const saveEnv = await confirm({
-      message: '.env file: save Firebase config automatically? (creates it if missing)',
-      default: true,
-    })
-
-    if (saveEnv) {
-      // ── Auto-write path: write silently, no box shown ──────────────────
-      try {
-        const envPath = path.join(project.rootDir, '.env')
-        const envExists = await fileExists(envPath)
-
-        let existingLines: string[] = []
-        if (envExists) {
-          const raw = await readFile(envPath)
-          existingLines = raw.split('\n')
-          if (existingLines.length > 0 && existingLines[existingLines.length - 1] === '') {
-            existingLines.pop()
-          }
-        }
-
-        // Build a map of prefixed-key → line-index for existing keys
-        const lineIndexByKey: Record<string, number> = {}
-        for (let i = 0; i < existingLines.length; i++) {
-          const line = existingLines[i]
-          const eqIdx = line.indexOf('=')
-          if (eqIdx > 0 && !line.trimStart().startsWith('#')) {
-            const key = line.substring(0, eqIdx).trim()
-            lineIndexByKey[key] = i
-          }
-        }
-
-        // Merge: update in-place or collect keys to append
-        const toAppend: string[] = []
-        for (const { bare, value } of fcmKeys) {
-          const prefixedKey = `${envPrefix}${bare}`
-          if (prefixedKey in lineIndexByKey) {
-            existingLines[lineIndexByKey[prefixedKey]] = `${prefixedKey}=${value}`
-          } else {
-            toAppend.push(`${prefixedKey}=${value}`)
-          }
-        }
-
-        const finalContent = [...existingLines, ...toAppend].join('\n') + '\n'
-        await writeFile(envPath, finalContent)
-        const envAction = envExists ? 'updated' : 'created'
-        logger.success(`✓  .env ${envAction} (${fcmKeys.length} keys) — prefix: ${prefixLabel}`)
-
-        // Ensure .env is in .gitignore
-        const gitignorePath = path.join(project.rootDir, GITIGNORE_FILENAME)
-        let gitignoreContent = ''
-        try {
-          gitignoreContent = await readFile(gitignorePath)
-        } catch { /* .gitignore doesn't exist yet */ }
-        const gitignoreLines = gitignoreContent.split('\n').map(l => l.trim())
-        if (!gitignoreLines.includes('.env')) {
-          await appendToFile(gitignorePath, '.env')
-          logger.success('✓  .env added to .gitignore')
-        }
-      } catch (envErr: any) {
-        logger.warn(`⚠  Could not save .env file: ${envErr.message}`)
-        logger.info('   Copy the values below and add them manually.')
-        // Fall through to show the manual box as a fallback
-        logger.blank()
-        logger.raw('──────────────────────────────────────────────')
-        logger.raw('  Add these to your .env file')
-        logger.raw('──────────────────────────────────────────────')
-        logger.blank()
-        for (const { bare, value } of fcmKeys) {
-          logger.raw(`  ${envPrefix}${bare}=${value}`)
-        }
-        logger.blank()
-        logger.warn('  ⚠  Never commit .env to git. Add it to .gitignore now.')
-        logger.raw('──────────────────────────────────────────────')
-      }
-
-    } else {
-      // ── Manual path: show the box so the user can copy/paste ───────────
-      logger.blank()
-      logger.raw('──────────────────────────────────────────────')
-      logger.raw('  Add these to your .env file')
-      logger.raw('──────────────────────────────────────────────')
-      logger.blank()
-      for (const { bare, value } of fcmKeys) {
-        logger.raw(`  ${envPrefix}${bare}=${value}`)
-      }
-      logger.blank()
-      logger.warn('  ⚠  Never commit .env to git. Add it to .gitignore now.')
-      logger.raw('──────────────────────────────────────────────')
-      logger.blank()
-      await input({ message: "Press Enter once you've added these values to your .env..." })
-    }
-  }
-
   // ── Usage guide ───────────────────────────────────────────────────────
   if (!backendOnly) {
     logger.blank()
@@ -251,19 +133,11 @@ export async function runPrompts(project: ProjectInfo, options: { backendOnly?: 
     logger.raw('  How to use QuickFCM in your app')
     logger.raw('──────────────────────────────────────────────')
     logger.blank()
-    logger.raw('  // 1. In src/NotificationHandler/config.ts (already generated):')
-    logger.raw('  export const pushConfig = {')
-    logger.raw(`    apiKey: process.env.${envPrefix}FCM_API_KEY!,`)
-    logger.raw(`    authDomain: process.env.${envPrefix}FCM_AUTH_DOMAIN!,`)
-    logger.raw(`    projectId: process.env.${envPrefix}FCM_PROJECT_ID!,`)
-    logger.raw(`    storageBucket: process.env.${envPrefix}FCM_STORAGE_BUCKET!,`)
-    logger.raw(`    messagingSenderId: process.env.${envPrefix}FCM_MESSAGING_SENDER_ID!,`)
-    logger.raw(`    appId: process.env.${envPrefix}FCM_APP_ID!,`)
-    logger.raw(`    vapidKey: process.env.${envPrefix}FCM_VAPID_KEY!,`)
-    logger.raw("    registerUrl: '/api/push/register',")
-    logger.raw('  }')
+    logger.raw('  // 1. Config is already generated at:')
+    logger.raw('  //    src/NotificationHandler/config.ts')
+    logger.raw('  //    (reads from quickfcm.config.json — no env vars needed)')
     logger.blank()
-    logger.raw('  // 2. Wrap your app root (src/App.tsx or src/main.tsx):')
+    logger.raw('  // 2. Wrap your app root (src/App.tsx or layout.tsx):')
     logger.raw("  import { CustomPushProvider } from 'quick-fcm'")
     logger.raw("  import { pushConfig } from './NotificationHandler/config'")
     logger.blank()
@@ -279,12 +153,10 @@ export async function runPrompts(project: ProjectInfo, options: { backendOnly?: 
     logger.raw("  import { usePushMessage } from 'quick-fcm'")
     logger.blank()
     logger.raw('  function NotificationButton() {')
-    logger.raw('    const { messages, sendMessage, requestPermission } = usePushMessage()')
+    logger.raw('    const { messages, requestPermission } = usePushMessage()')
     logger.raw('    return (')
     logger.raw('      <div>')
     logger.raw("        <button onClick={requestPermission}>Enable Notifications</button>")
-    logger.raw("        <button onClick={() => sendMessage('Hello', 'World')}>Send Test</button>")
-    logger.raw('        {messages.map(m => <div key={m.id}>{m.title}: {m.body}</div>)}')
     logger.raw('      </div>')
     logger.raw('    )')
     logger.raw('  }')
@@ -295,11 +167,9 @@ export async function runPrompts(project: ProjectInfo, options: { backendOnly?: 
     logger.raw("  console.log('FCM Token:', token)")
     logger.raw('──────────────────────────────────────────────')
     logger.blank()
-
-    logger.raw(`  For more information please review integration guide generated for your project:`);
-    logger.raw(`      src/NotificationHandler/USAGE.md`);
-    logger.blank();
-
+    logger.raw('  For full integration details, see:')
+    logger.raw('      src/NotificationHandler/USAGE.md')
+    logger.blank()
   }
 
   return {

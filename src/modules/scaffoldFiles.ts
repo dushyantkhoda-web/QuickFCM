@@ -66,22 +66,18 @@ export async function scaffoldFiles(context: CLIContext): Promise<ScaffoldedFile
 
   context.serviceWorkerFilename = swFilename
 
-  // ── Determine env variable prefix (Phase 2 aligned) ──────────────────
-  // Next.js → NEXT_PUBLIC_, React/Vite → no prefix (plain FCM_ keys)
-  const isTs = project.language === 'typescript'
-  const envPrefix = project.isNextJs ? 'NEXT_PUBLIC_' : ''
-
   // ── Template variables ────────────────────────────────────────────────
+  const isTs = project.language === 'typescript'
+
   const vars: Record<string, string> = {
-    API_KEY:            answers.firebase.apiKey,
-    AUTH_DOMAIN:        answers.firebase.authDomain,
-    PROJECT_ID:         answers.firebase.projectId,
-    STORAGE_BUCKET:     answers.firebase.storageBucket,
-    MESSAGING_SENDER_ID:answers.firebase.messagingSenderId,
-    APP_ID:             answers.firebase.appId,
-    VAPID_KEY:          answers.firebase.vapidKey,
-    ENV_PREFIX:         envPrefix,
-    SW_FILENAME:        swFilename,
+    API_KEY:             answers.firebase.apiKey,
+    AUTH_DOMAIN:         answers.firebase.authDomain,
+    PROJECT_ID:          answers.firebase.projectId,
+    STORAGE_BUCKET:      answers.firebase.storageBucket,
+    MESSAGING_SENDER_ID: answers.firebase.messagingSenderId,
+    APP_ID:              answers.firebase.appId,
+    VAPID_KEY:           answers.firebase.vapidKey,
+    SW_FILENAME:         swFilename,
   }
 
   // ── Read all templates — pick JS or TS variant by project language ────

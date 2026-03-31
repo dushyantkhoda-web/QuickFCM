@@ -3,6 +3,7 @@
 // Values are read directly from quickfcm.config.json (no env vars needed).
 // ─────────────────────────────────────────────────────────────────────────────
 
+// @ts-ignore
 import pkg from '../../quickfcm.config.json'
 
 export const pushConfig = {
@@ -14,5 +15,5 @@ export const pushConfig = {
   appId:             pkg.firebase.appId,
   vapidKey:          pkg.firebase.vapidKey,
   serviceWorkerPath: '/{{SW_FILENAME}}',
-  registerUrl:       (pkg.backend?.registerUrl as string | undefined) ?? '/api/push/register',
+  registerUrl:       pkg.backend?.registerUrl ?? '/api/push/register',
 }
