@@ -79,18 +79,18 @@ function NotificationBell() {
 
 ## Configuration
 
-Edit `pushConfig.ts` to update your Firebase credentials.
+Edit `pushConfig` file to update your Firebase credentials.
 
 **Environment Variables** — store secrets in `.env`:
 
 ```env
-{{ENV_PREFIX}}_FIREBASE_API_KEY=your-api-key
-{{ENV_PREFIX}}_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
-{{ENV_PREFIX}}_FIREBASE_PROJECT_ID=your-project-id
-{{ENV_PREFIX}}_FIREBASE_STORAGE_BUCKET=your-project.appspot.com
-{{ENV_PREFIX}}_FIREBASE_MESSAGING_SENDER_ID=123456789
-{{ENV_PREFIX}}_FIREBASE_APP_ID=1:123456789:web:abc123
-{{ENV_PREFIX}}_FIREBASE_VAPID_KEY=your-vapid-key
+{{ENV_PREFIX}}FCM_API_KEY=your-api-key
+{{ENV_PREFIX}}FCM_AUTH_DOMAIN=your-project.firebaseapp.com
+{{ENV_PREFIX}}FCM_PROJECT_ID=your-project-id
+{{ENV_PREFIX}}FCM_STORAGE_BUCKET=your-project.appspot.com
+{{ENV_PREFIX}}FCM_MESSAGING_SENDER_ID=123456789
+{{ENV_PREFIX}}FCM_APP_ID=1:123456789:web:abc123
+{{ENV_PREFIX}}FCM_VAPID_KEY=your-vapid-key
 ```
 
 > Get VAPID key from: [Firebase Console → Cloud Messaging](https://console.firebase.google.com/project/_/settings/cloudmessaging)
@@ -129,11 +129,11 @@ It handles background push notifications and notification click redirects.
 ## Files Reference
 
 | File | Purpose |
-|------|---------|
-| `pushProvider.tsx` | React context provider with Safari detection |
-| `usePushMessage.ts` | Hook to access push state and methods |
-| `pushConfig.ts` | Firebase configuration (edit this) |
-| `getPushToken.ts` | Token retrieval with SW registration |
+|------|---------| 
+| `pushProvider` | React context provider with Safari detection |
+| `usePushMessage` | Hook to access push state and methods |
+| `pushConfig` | Firebase configuration (edit this) |
+| `getPushToken` | Token retrieval with SW registration |
 | `USAGE.md` | This file |
 
 ---

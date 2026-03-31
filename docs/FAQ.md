@@ -35,8 +35,13 @@ quick-fcm init
 
 ### What are the system requirements?
 - Node.js >= 18.0.0
-- React project (any framework)
+- **React or Next.js** frontend project (any version)
 - Firebase project (free tier works)
+
+> If the CLI detects that your project has neither `react` nor `next` in its dependencies, it **exits immediately** with a clear message. To scaffold backend-only (Express / NestJS), use `--backend-only`:
+> ```bash
+> npx quick-fcm init --backend-only
+> ```
 
 ### Will this work with my existing React project?
 Yes! The CLI is designed to work with any React project:
@@ -47,7 +52,15 @@ Yes! The CLI is designed to work with any React project:
 - TypeScript or JavaScript
 
 ### Does it work with Next.js App Router?
-Yes. The `CustomPushProvider` and `usePushMessage` hook are marked with `'use client'`, making them fully compatible with the Next.js App Router. You should wrap your app (or specific layouts) in a Client Component that includes the provider. See [Next.js Example](./EXAMPLES.md#nextjs-app-router-integration).
+Yes. The CLI **automatically detects** whether your project uses the App Router (`app/` directory) or Pages Router (`pages/` directory) and logs the result:
+```
+✓  Detected framework: Next.js (App Router)
+```
+or
+```
+✓  Detected framework: Next.js (Pages Router)
+```
+All generated client components include `'use client'`. For App Router projects, use the generated `NotificationHandler/` inside a Client Component layout. See [Next.js Example](./EXAMPLES.md#nextjs-app-router-integration).
 
 ## Configuration
 
@@ -55,8 +68,41 @@ Yes. The `CustomPushProvider` and `usePushMessage` hook are marked with `'use cl
 All configuration is stored in `our_pkg.json` in your project root. This file contains:
 - Firebase configuration
 - Backend endpoints
-- Project metadata
+- Project metadata (language, framework, router type)
 - Version compatibility info
+
+### What are the environment variable names?
+The CLI always uses the `FCM_` naming scheme. The prefix depends on your framework:
+
+| Framework | Example key |
+|---|---|
+| Next.js | `NEXT_PUBLIC_FCM_API_KEY` |
+| React / Vite | `FCM_API_KEY` |
+
+The full set of keys is: `FCM_API_KEY`, `FCM_AUTH_DOMAIN`, `FCM_PROJECT_ID`, `FCM_STORAGE_BUCKET`, `FCM_MESSAGING_SENDER_ID`, `FCM_APP_ID`, `FCM_VAPID_KEY`.
+
+### What happens if I run `init` twice?
+Safe to run multiple times. The CLI:
+- **Updates** existing FCM keys in `.env` in-place (same line, new value)
+- **Appends** only truly new keys
+- **Preserves** all other lines, comments, and unrelated variables exactly
+- **Never** writes a duplicate key
+
+### Does the CLI install firebase and quick-fcm for me?
+Yes. Before scaffolding any files, the CLI checks your `package.json`. If `firebase` or `quick-fcm` is missing, it installs both automatically using your project's package manager:
+- Detects `pnpm-lock.yaml` → uses `pnpm`
+- Detects `yarn.lock` → uses `yarn`
+- Otherwise → uses `npm`
+
+Install order: `quick-fcm` first, then `firebase`. If a package is already present, it is silently skipped. If an install fails, a warning is shown and setup continues — you can install manually.
+
+### My project is JavaScript, not TypeScript. What gets generated?
+All generated files use JavaScript extensions:
+- `PushNotificationManager.jsx` instead of `.tsx`
+- `config.js` instead of `.ts`
+- `pushHelper.js` instead of `.ts`
+
+The JS files contain no TypeScript syntax — they are plain ES module files that work with any JS React/Next.js setup.
 
 ### Can I change the configuration after setup?
 Yes! Simply edit `our_pkg.json`. The changes will be picked up immediately.
@@ -260,6 +306,7 @@ No! The CLI:
 ```bash
 npm install firebase@latest
 ```
+> **Note**: The CLI installs a specific pinned version of `firebase` that is known to be compatible. If you upgrade manually, test that push notifications still work correctly.
 
 ### What about React updates?
 The generated code is framework-agnostic and should work with React updates. Test thoroughly after major React version changes.

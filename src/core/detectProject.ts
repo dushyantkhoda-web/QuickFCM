@@ -39,6 +39,29 @@ export async function detectProject(cwd: string, options: { backendOnly?: boolea
     await fileExists(path.join(rootDir, 'vite.config.js'))
   )
 
+  // ── unsupported project guard (frontend mode only) ────────────────────
+  if (!backendOnly && !isNextJs && !rawReact) {
+    console.error('✖  This project does not use React or Next.js.')
+    console.error('   custom-push only supports React and Next.js frontend projects.')
+    process.exit(1)
+  }
+
+  // ── Next.js router type detection ────────────────────────────────────
+  let nextRouterType: 'app' | 'pages' | null = null
+  if (isNextJs) {
+    const hasAppDir = await fileExists(path.join(rootDir, 'app'))
+    const hasPagesDir = await fileExists(path.join(rootDir, 'pages'))
+
+    if (hasAppDir) {
+      nextRouterType = 'app'
+    } else if (hasPagesDir) {
+      nextRouterType = 'pages'
+    } else {
+      nextRouterType = 'app'
+      logger.info('ℹ  Could not detect router type. Assuming App Router.')
+    }
+  }
+
   // ── backend framework ─────────────────────────────────────────────────
   let backendFramework: BackendFramework = null
   const hasFirebaseAdmin = !!(deps['firebase-admin'] || devDeps['firebase-admin'])
@@ -79,6 +102,7 @@ export async function detectProject(cwd: string, options: { backendOnly?: boolea
     scope,
     hasTsConfig,
     isNextJs,
+    nextRouterType,
     isVite,
     hasFirebaseAdmin,
     packageJson,

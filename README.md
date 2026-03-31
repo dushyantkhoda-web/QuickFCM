@@ -1,22 +1,35 @@
 # QuickFCM CLI
 
-> Professional backend scaffolding for Firebase Cloud Messaging with seamless React integration
+> Production-grade push notifications for React and Next.js — one command, zero guesswork
 
-[![npm version](https://badge.fury.io/js/QuickFCM.svg)](https://badge.fury.io/js/QuickFCM)
+[![npm version](https://badge.fury.io/js/quick-fcm.svg)](https://badge.fury.io/js/quick-fcm)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org)
 
-QuickFCM is a production-grade CLI tool that scaffolds secure Firebase Cloud Messaging (FCM) infrastructure. It focuses on zero-fluff backend scaffolding (Express/NestJS) while providing an React package for frontend integration, including full support for **Next.js App Router**.
+QuickFCM is a production-grade CLI tool that scaffolds secure Firebase Cloud Messaging (FCM) infrastructure for **React and Next.js** projects. It detects your framework, router type, and language automatically — then generates the exact files your project needs, correctly wired to your `.env`.
 
 ## Features
 
-- **Zero-Config Frontend** - Automatically scaffolds a ready-to-use notification handler
-- **Backend-focused** - Scaffolds production-grade `FCMHelper` and routes
-- **Package-based Frontend** - Core logic handled by the `QuickFCM` React package
-- **App Router Support** - Fully compatible with Next.js 13+ (includes `'use client'` directives)
-- **Service Worker Engine** - Integrated on-demand service worker registration
-- **Proactive Validation** - Mandatory dependency checks for both `firebase-admin` and `firebase`
-- **Minimal Prompts** - Intelligent project detection reduces setup to maximum 4 questions
+- **Framework Detection** — Detects React vs Next.js (App Router / Pages Router) automatically. Exits cleanly if the project is unsupported.
+- **JS + TS Support** — Generates `.ts`/`.tsx` for TypeScript projects and `.js`/`.jsx` for JavaScript projects
+- **Zero-Config Frontend** — Scaffolds a ready-to-use `NotificationHandler/` directory with provider, hook, and config wired up
+- **Clean `.env` Writing** — Writes `FCM_*` keys (`NEXT_PUBLIC_FCM_*` for Next.js). Re-running never creates duplicate keys — values are merged in-place
+- **Auto Dependency Install** — Installs `firebase` and `quick-fcm` into the target project before scaffolding if they are missing. Uses your existing package manager (pnpm / yarn / npm)
+- **Backend Scaffolding** — Generates production-grade `FCMHelper` and routes for Express / NestJS
+- **Safari Support** — Full Safari 16+ Web Push support with proper user-gesture permission flow
+- **App Router Compatible** — All client components include `'use client'` directives
+
+## Supported Projects
+
+| Project type | Supported |
+|---|---|
+| React (TypeScript) | ✓ |
+| React (JavaScript) | ✓ |
+| Next.js App Router (TS or JS) | ✓ |
+| Next.js Pages Router (TS or JS) | ✓ |
+| Vite + React | ✓ |
+| Express / NestJS backend | ✓ (via `--backend-only`) |
+| Plain Node.js (no React/Next.js) | ✗ — CLI exits with a clear message |
 
 ## Quick Start (3 Minutes)
 
@@ -25,18 +38,27 @@ QuickFCM is a production-grade CLI tool that scaffolds secure Firebase Cloud Mes
 npx quick-fcm init
 ```
 
-### 2. Wrap your application (Recommended)
-The CLI automatically generates a `src/NotificationHandler/` directory. Use it to wrap your app:
+The CLI will:
+- Auto-detect your framework (React / Next.js App Router / Next.js Pages Router)
+- Install `firebase` and `quick-fcm` into your project if missing
+- Ask for your Firebase config values
+- Write them to `.env` with the correct prefix (`NEXT_PUBLIC_FCM_*` for Next.js, `FCM_*` for React)
+- Generate files in `src/NotificationHandler/` using the right language (`.ts`/`.tsx` or `.js`/`.jsx`)
 
+### 2. Wrap your application
+
+The CLI generates `src/NotificationHandler/`. Pull it into your root:
+
+**TypeScript (Next.js App Router — `app/layout.tsx`)**
 ```tsx
+'use client';
 import { CustomPushProvider } from 'quick-fcm';
-import { pushConfig } from './src/NotificationHandler/pushConfig';
-import { PushNotificationManager } from './src/NotificationHandler/PushNotificationManager';
+import { pushConfig } from './NotificationHandler/config';
+import { PushNotificationManager } from './NotificationHandler/PushNotificationManager';
 
-function RootLayout({ children }) {
+export default function RootLayout({ children }) {
   return (
     <CustomPushProvider config={pushConfig}>
-      {/* 💎 This component handles all foreground notifications and toasts */}
       <PushNotificationManager />
       {children}
     </CustomPushProvider>
@@ -44,27 +66,66 @@ function RootLayout({ children }) {
 }
 ```
 
-### 3. Add an "Enable Notifications" Button
-Check the generated `src/NotificationHandler/USAGE.md` for a professional, copy-pasteable permission toggle button.
+**JavaScript (React — `src/App.jsx`)**
+```jsx
+import { CustomPushProvider } from 'quick-fcm';
+import { pushConfig } from './NotificationHandler/config';
+import { PushNotificationManager } from './NotificationHandler/PushNotificationManager';
+
+function App() {
+  return (
+    <CustomPushProvider config={pushConfig}>
+      <PushNotificationManager />
+      <YourApp />
+    </CustomPushProvider>
+  );
+}
+```
+
+### 3. Enable notifications from a button
+
+Check `src/NotificationHandler/USAGE.md` (generated by the CLI) for a copy-pasteable permission button example.
+
+## Environment Variables
+
+The CLI writes env vars automatically during `init`. The key names follow this scheme:
+
+| Key | Next.js | React / Vite |
+|-----|---------|--------------|
+| API Key | `NEXT_PUBLIC_FCM_API_KEY` | `FCM_API_KEY` |
+| Auth Domain | `NEXT_PUBLIC_FCM_AUTH_DOMAIN` | `FCM_AUTH_DOMAIN` |
+| Project ID | `NEXT_PUBLIC_FCM_PROJECT_ID` | `FCM_PROJECT_ID` |
+| Storage Bucket | `NEXT_PUBLIC_FCM_STORAGE_BUCKET` | `FCM_STORAGE_BUCKET` |
+| Messaging Sender ID | `NEXT_PUBLIC_FCM_MESSAGING_SENDER_ID` | `FCM_MESSAGING_SENDER_ID` |
+| App ID | `NEXT_PUBLIC_FCM_APP_ID` | `FCM_APP_ID` |
+| VAPID Key | `NEXT_PUBLIC_FCM_VAPID_KEY` | `FCM_VAPID_KEY` |
+
+Running `init` a second time **updates** existing values in-place — no duplicate keys are ever written.
 
 ## Advanced Frontend Integration
 
-For developers who need full control or prefer not to use the scaffolded handler:
+For full manual control:
 
-### 1. Install the package
+### Install
+
 ```bash
 npm install quick-fcm
 ```
 
-### 2. Manual Config
+### Config using env vars
+
 ```typescript
+// TypeScript (React)
 import { CustomPushProvider } from 'quick-fcm';
 
 const pushConfig = {
-  apiKey: "your-api-key",
-  projectId: "your-project-id",
-  vapidKey: "your-vapid-key"
-  // ...
+  apiKey:            process.env.FCM_API_KEY!,
+  authDomain:        process.env.FCM_AUTH_DOMAIN!,
+  projectId:         process.env.FCM_PROJECT_ID!,
+  storageBucket:     process.env.FCM_STORAGE_BUCKET!,
+  messagingSenderId: process.env.FCM_MESSAGING_SENDER_ID!,
+  appId:             process.env.FCM_APP_ID!,
+  vapidKey:          process.env.FCM_VAPID_KEY!,
 };
 
 function Root() {
@@ -76,22 +137,23 @@ function Root() {
 }
 ```
 
-### 3. Core Frontend API
-The `usePushMessage` hook provides a complete interface:
+### Frontend API
+
+The `usePushMessage` hook provides the complete interface:
 
 | Property | Type | Description |
 |----------|------|-------------|
-| `token` | `string \| null` | The unique FCM device token. |
-| `messages` | `PushMessage[]` | Array of foreground notifications received. |
-| `isSupported` | `boolean` | Whether the browser supports Web Push. |
-| `isPermissionGranted` | `boolean` | Current notification permission status. |
-| `requestPermission` | `() => Promise<boolean>` | Triggers the browser permission prompt (Required for Safari). |
-| `sendMessage` | `(title, body, data?) => Promise<void>` | Sends a push via your configured backend. |
-| `clearMessages` | `() => void` | Clears the local `messages` state. |
+| `token` | `string \| null` | The unique FCM device token |
+| `messages` | `PushMessage[]` | Array of foreground notifications received |
+| `isSupported` | `boolean` | Whether the browser supports Web Push |
+| `isPermissionGranted` | `boolean` | Current notification permission status |
+| `requestPermission` | `() => Promise<boolean>` | Triggers the browser permission prompt (**must be called from a click handler for Safari**) |
+| `sendMessage` | `(title, body, data?) => Promise<void>` | Sends a push via your configured backend |
+| `clearMessages` | `() => void` | Clears the local `messages` state |
 
 ## Backend Scaffolding
 
-The CLI generates a high-performance `FCMHelper` in your `src/helper/` directory.
+The CLI generates a high-performance `FCMHelper` in `src/helper/`:
 
 ```typescript
 import { sendPushNotification } from './helper/FCMHelper';
@@ -105,13 +167,25 @@ await sendPushNotification({
 });
 ```
 
+For backend-only setup (Express / NestJS without any frontend):
+
+```bash
+npx quick-fcm init --backend-only
+```
+
 ## Configuration
 
-All local configuration is stored in `our_pkg.json`. This acts as the single source of truth.
+All local configuration is stored in `our_pkg.json` (generated by the CLI):
 
 ```json
 {
-  "stack": { "language": "typescript", "scope": "both", "backendFramework": "express" },
+  "stack": {
+    "language": "typescript",
+    "scope": "both",
+    "backendFramework": "express",
+    "isNextJs": true,
+    "nextRouterType": "app"
+  },
   "firebase": { "apiKey": "...", "vapidKey": "..." },
   "backend": { "registerUrl": "http://localhost:3000/push/register" }
 }
@@ -119,19 +193,15 @@ All local configuration is stored in `our_pkg.json`. This acts as the single sou
 
 ## Documentation
 
-- **[Installation Guide](./docs/INSTALLATION.md)** - Requirements and Firebase setup
-- **[API Reference](./docs/API.md)** - Detailed provider and helper documentation
-- **[Examples](./docs/EXAMPLES.md)** - Next.js, Auth, and payload samples
+- **[Installation Guide](./docs/INSTALLATION.md)** - Requirements, Firebase setup, and detection details
+- **[API Reference](./docs/API.md)** - Full CLI, frontend, and backend API docs
+- **[Examples](./docs/EXAMPLES.md)** - Next.js, React, JavaScript, and backend examples
 - **[FAQ](./docs/FAQ.md)** - Common questions and troubleshooting
 
 ## License
 
-MIT © [Your Name]
+MIT © QuickFCM Team
 
 ---
 
 **Made with ❤️ for the React & Node.js communities**
-
-
-
-

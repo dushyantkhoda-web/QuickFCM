@@ -10,6 +10,7 @@ import { generateConfig } from '../modules/generateConfig'
 import { scaffoldFrontend } from '../modules/scaffoldFrontend'
 import { scaffoldBackend } from '../modules/scaffoldBackend'
 import { scaffoldFiles } from '../modules/scaffoldFiles'
+import { installDeps } from '../modules/installDeps'
 import { logger } from '../utils/logger'
 import { showStep, messages, successAnimation } from '../utils/branding'
 import { SERVICE_WORKER_FILENAME } from '../constants'
@@ -37,8 +38,12 @@ export async function init(options: {
   logger.info(`   Firebase: ${project.hasFirebase ? `✓ v${project.firebaseVersion}` : '✗ not found'}`)
 
   if (!backendOnly) {
-    const framework = project.isNextJs ? 'Next.js' : project.isVite ? 'Vite' : (project.reactVersion ? 'React' : 'none')
-    logger.info(`   Framework: ${framework}`)
+    if (project.isNextJs) {
+      const routerLabel = project.nextRouterType === 'pages' ? 'Pages Router' : 'App Router'
+      logger.success(`✓  Detected framework: Next.js (${routerLabel})`)
+    } else {
+      logger.success('✓  Detected framework: React')
+    }
   }
 
   logger.info(`   Backend: ${project.backendFramework || 'none'}`)
@@ -107,10 +112,16 @@ export async function init(options: {
   await generateConfig(context)
   configSpin.succeed('Configuration file created')
 
-  // ── Step 6: Scaffold based on mode ────────────────────────────────────
+  // ── Step 6: Auto-install missing frontend dependencies ──────────────
+  if (!backendOnly) {
+    showStep(6, 'Checking required dependencies...')
+    await installDeps(project, { backendOnly })
+  }
+
+  // ── Step 7: Scaffold based on mode ────────────────────────────────────
   if (mode === 'files' && !backendOnly) {
     // --files mode: generate standalone files into src/push-notification/
-    showStep(6, 'Generating standalone push notification files...')
+    showStep(7, 'Generating standalone push notification files...')
     const filesSpin = createSpinner('Scaffolding push-notification files...', 'dots')
     filesSpin.start()
     context.scaffolded.push(...(await scaffoldFiles(context)))
@@ -118,14 +129,14 @@ export async function init(options: {
   } else if (!backendOnly) {
     // Library mode: scaffold frontend boilerplate
     if (generateFrontend) {
-      showStep(6, 'Building frontend components...')
+      showStep(7, 'Building frontend components...')
       const frontSpin = createSpinner('Generating frontend boilerplate...', 'dots')
       frontSpin.start()
       context.scaffolded.push(...(await scaffoldFrontend(context)))
       frontSpin.succeed('Frontend scaffolding complete')
     } else {
       // Default library mode — generate service worker + show import instructions
-      showStep(6, 'Generating service worker...')
+      showStep(7, 'Generating service worker...')
       const swSpin = createSpinner('Creating service worker file...', 'dots')
       swSpin.start()
       context.scaffolded.push(...(await scaffoldFrontend(context)))
@@ -133,9 +144,9 @@ export async function init(options: {
     }
   }
 
-  // ── Step 7: Scaffold backend ──────────────────────────────────────────
+  // ── Step 8: Scaffold backend ──────────────────────────────────────────
   if (project.scope === 'both' || backendOnly) {
-    showStep(7, 'Building backend infrastructure...')
+    showStep(8, 'Building backend infrastructure...')
     const backSpin = createSpinner('Generating backend helpers...', 'line')
     backSpin.start()
     context.scaffolded.push(...(await scaffoldBackend(context)))

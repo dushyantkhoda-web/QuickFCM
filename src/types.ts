@@ -40,6 +40,7 @@ export interface ProjectInfo {
   scope: Scope                          // 'both' if backendFramework !== null
   hasTsConfig: boolean
   isNextJs: boolean
+  nextRouterType: 'app' | 'pages' | null  // only set when isNextJs is true
   isVite: boolean
   hasFirebaseAdmin: boolean             // check for 'firebase-admin' in deps
   packageJson: Record<string, any>

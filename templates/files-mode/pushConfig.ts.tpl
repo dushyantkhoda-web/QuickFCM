@@ -13,12 +13,12 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const pushConfig = {
-  apiKey:            process.env.{{ENV_PREFIX}}_FIREBASE_API_KEY || '{{API_KEY}}',
-  authDomain:        process.env.{{ENV_PREFIX}}_FIREBASE_AUTH_DOMAIN || '{{AUTH_DOMAIN}}',
-  projectId:         process.env.{{ENV_PREFIX}}_FIREBASE_PROJECT_ID || '{{PROJECT_ID}}',
-  storageBucket:     process.env.{{ENV_PREFIX}}_FIREBASE_STORAGE_BUCKET || '{{STORAGE_BUCKET}}',
-  messagingSenderId: process.env.{{ENV_PREFIX}}_FIREBASE_MESSAGING_SENDER_ID || '{{MESSAGING_SENDER_ID}}',
-  appId:             process.env.{{ENV_PREFIX}}_FIREBASE_APP_ID || '{{APP_ID}}',
-  vapidKey:          process.env.{{ENV_PREFIX}}_FIREBASE_VAPID_KEY || '{{VAPID_KEY}}',
+  apiKey:            process.env.{{ENV_PREFIX}}FCM_API_KEY || '{{API_KEY}}',
+  authDomain:        process.env.{{ENV_PREFIX}}FCM_AUTH_DOMAIN || '{{AUTH_DOMAIN}}',
+  projectId:         process.env.{{ENV_PREFIX}}FCM_PROJECT_ID || '{{PROJECT_ID}}',
+  storageBucket:     process.env.{{ENV_PREFIX}}FCM_STORAGE_BUCKET || '{{STORAGE_BUCKET}}',
+  messagingSenderId: process.env.{{ENV_PREFIX}}FCM_MESSAGING_SENDER_ID || '{{MESSAGING_SENDER_ID}}',
+  appId:             process.env.{{ENV_PREFIX}}FCM_APP_ID || '{{APP_ID}}',
+  vapidKey:          process.env.{{ENV_PREFIX}}FCM_VAPID_KEY || '{{VAPID_KEY}}',
   serviceWorkerPath: '/{{SW_FILENAME}}',
 }

@@ -8,9 +8,12 @@ import {
   TEMPLATES_DIR,
   SW_TEMPLATE,
   FILES_MODE_PROVIDER,
+  FILES_MODE_PROVIDER_JSX,
   FILES_MODE_HOOK,
+  FILES_MODE_HOOK_JS,
   FILES_MODE_CONFIG,
   FILES_MODE_TOKEN,
+  FILES_MODE_TOKEN_JS,
   FILES_MODE_USAGE,
   SERVICE_WORKER_FILENAME,
   SERVICE_WORKER_FALLBACK_FILENAME,
@@ -63,32 +66,42 @@ export async function scaffoldFiles(context: CLIContext): Promise<ScaffoldedFile
 
   context.serviceWorkerFilename = swFilename
 
-  // ── Determine env variable prefix ────────────────────────────────────
-  const envPrefix = project.isVite ? 'VITE' : 'REACT_APP'
+  // ── Determine env variable prefix (Phase 2 aligned) ──────────────────
+  // Next.js → NEXT_PUBLIC_, React/Vite → no prefix (plain FCM_ keys)
+  const isTs = project.language === 'typescript'
+  const envPrefix = project.isNextJs ? 'NEXT_PUBLIC_' : ''
 
   // ── Template variables ────────────────────────────────────────────────
   const vars: Record<string, string> = {
-    API_KEY: answers.firebase.apiKey,
-    AUTH_DOMAIN: answers.firebase.authDomain,
-    PROJECT_ID: answers.firebase.projectId,
-    STORAGE_BUCKET: answers.firebase.storageBucket,
-    MESSAGING_SENDER_ID: answers.firebase.messagingSenderId,
-    APP_ID: answers.firebase.appId,
-    VAPID_KEY: answers.firebase.vapidKey,
-    ENV_PREFIX: envPrefix,
-    SW_FILENAME: swFilename,
+    API_KEY:            answers.firebase.apiKey,
+    AUTH_DOMAIN:        answers.firebase.authDomain,
+    PROJECT_ID:         answers.firebase.projectId,
+    STORAGE_BUCKET:     answers.firebase.storageBucket,
+    MESSAGING_SENDER_ID:answers.firebase.messagingSenderId,
+    APP_ID:             answers.firebase.appId,
+    VAPID_KEY:          answers.firebase.vapidKey,
+    ENV_PREFIX:         envPrefix,
+    SW_FILENAME:        swFilename,
   }
 
-  // ── Read all templates (fail fast with good error messages) ───────────
+  // ── Read all templates — pick JS or TS variant by project language ────
+  const providerTplName = isTs ? FILES_MODE_PROVIDER     : FILES_MODE_PROVIDER_JSX
+  const hookTplName     = isTs ? FILES_MODE_HOOK         : FILES_MODE_HOOK_JS
+  const tokenTplName    = isTs ? FILES_MODE_TOKEN        : FILES_MODE_TOKEN_JS
+
   const [swTemplate, providerTemplate, hookTemplate, configTemplate, tokenTemplate, usageTemplate] =
     await Promise.all([
-      readTemplate('service worker', path.join(TEMPLATES_DIR, SW_TEMPLATE)),
-      readTemplate('push provider', path.join(TEMPLATES_DIR, FILES_MODE_PROVIDER)),
-      readTemplate('use push message hook', path.join(TEMPLATES_DIR, FILES_MODE_HOOK)),
-      readTemplate('push config', path.join(TEMPLATES_DIR, FILES_MODE_CONFIG)),
-      readTemplate('get push token', path.join(TEMPLATES_DIR, FILES_MODE_TOKEN)),
-      readTemplate('USAGE.md', path.join(TEMPLATES_DIR, FILES_MODE_USAGE)),
+      readTemplate('service worker',        path.join(TEMPLATES_DIR, SW_TEMPLATE)),
+      readTemplate('push provider',         path.join(TEMPLATES_DIR, providerTplName)),
+      readTemplate('use push message hook', path.join(TEMPLATES_DIR, hookTplName)),
+      readTemplate('push config',           path.join(TEMPLATES_DIR, FILES_MODE_CONFIG)),
+      readTemplate('get push token',        path.join(TEMPLATES_DIR, tokenTplName)),
+      readTemplate('USAGE.md',              path.join(TEMPLATES_DIR, FILES_MODE_USAGE)),
     ])
+
+  // ── Output extensions ────────────────────────────────────────────────
+  const providerExt = isTs ? 'tsx' : 'jsx'
+  const codeExt     = isTs ? 'ts'  : 'js'
 
   // ── Build file list ───────────────────────────────────────────────────
   const filesToWrite: Array<{ path: string; content: string; description: string }> = [
@@ -98,23 +111,23 @@ export async function scaffoldFiles(context: CLIContext): Promise<ScaffoldedFile
       description: 'Firebase service worker — handles background push',
     },
     {
-      path: path.join(pushDir, 'pushProvider.tsx'),
+      path: path.join(pushDir, `pushProvider.${providerExt}`),
       content: providerTemplate,
       description: 'React context provider with Safari support',
     },
     {
-      path: path.join(pushDir, 'usePushMessage.ts'),
-      content: hookTemplate,
+      path: path.join(pushDir, `usePushMessage.${codeExt}`),
+      content: renderTemplate(hookTemplate, vars),
       description: 'Hook to access push notifications',
     },
     {
-      path: path.join(pushDir, 'pushConfig.ts'),
+      path: path.join(pushDir, `pushConfig.${codeExt}`),
       content: renderTemplate(configTemplate, vars),
       description: 'Firebase configuration — edit values here',
     },
     {
-      path: path.join(pushDir, 'getPushToken.ts'),
-      content: tokenTemplate,
+      path: path.join(pushDir, `getPushToken.${codeExt}`),
+      content: renderTemplate(tokenTemplate, vars),
       description: 'FCM token retrieval with SW registration',
     },
     {

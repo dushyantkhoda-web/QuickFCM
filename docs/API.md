@@ -29,11 +29,14 @@ npx quick-fcm init [options]
 
 #### Process Flow
 
-1. **Project Detection** - Analyzes package.json and project structure
-2. **Version Validation** - Checks Firebase/React compatibility  
-3. **Interactive Prompts** - Asks for undetectable configuration
-4. **File Generation** - Creates service worker and helper files
-5. **Backend Setup** - Scaffolds backend code if detected
+1. **Framework Detection** — Reads `package.json`; detects React vs Next.js (App Router / Pages Router). Exits immediately if neither is present (unless `--backend-only`)
+2. **Version Validation** — Checks Firebase/React compatibility
+3. **Interactive Prompts** — Asks for Firebase config (apiKey, authDomain, projectId, storageBucket, messagingSenderId, appId, vapidKey)
+4. **Write `.env`** — Writes 7 `FCM_*` keys with the correct prefix (`NEXT_PUBLIC_` for Next.js, none for React). Merges in-place — no duplicates ever written
+5. **Auto-install Dependencies** — Checks for `firebase` and `quick-fcm` in target project; installs missing ones using the project's own package manager (pnpm / yarn / npm)
+6. **Generate Config** — Creates `our_pkg.json` as the single source of truth
+7. **Scaffold Files** — Creates service worker, NotificationHandler files (`.ts`/`.tsx` for TypeScript projects, `.js`/`.jsx` for JavaScript projects)
+8. **Backend Setup** — Scaffolds backend helpers if Express / NestJS detected
 
 #### Exit Codes
 
@@ -91,13 +94,21 @@ interface OurPackageJson {
 }
 ```
 
-### Environment Variables
+### Environment Variables written to `.env`
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `DEBUG` | Enable debug logging | `undefined` |
-| `NODE_ENV` | Environment mode | `development` |
-| `FIREBASE_CONFIG` | Override Firebase config | `undefined` |
+The CLI writes these keys automatically. The prefix depends on the detected framework:
+
+| Key (bare name) | Next.js `.env` | React `.env` |
+|---|---|---|
+| FCM_API_KEY | `NEXT_PUBLIC_FCM_API_KEY` | `FCM_API_KEY` |
+| FCM_AUTH_DOMAIN | `NEXT_PUBLIC_FCM_AUTH_DOMAIN` | `FCM_AUTH_DOMAIN` |
+| FCM_PROJECT_ID | `NEXT_PUBLIC_FCM_PROJECT_ID` | `FCM_PROJECT_ID` |
+| FCM_STORAGE_BUCKET | `NEXT_PUBLIC_FCM_STORAGE_BUCKET` | `FCM_STORAGE_BUCKET` |
+| FCM_MESSAGING_SENDER_ID | `NEXT_PUBLIC_FCM_MESSAGING_SENDER_ID` | `FCM_MESSAGING_SENDER_ID` |
+| FCM_APP_ID | `NEXT_PUBLIC_FCM_APP_ID` | `FCM_APP_ID` |
+| FCM_VAPID_KEY | `NEXT_PUBLIC_FCM_VAPID_KEY` | `FCM_VAPID_KEY` |
+
+Running `init` more than once merges values in-place — no duplicate keys, all other `.env` content preserved.
 
 ## Frontend API (React Package)
 
@@ -163,21 +174,21 @@ const {
 
 ---
 
-### Zero-Config Scaffolding (Recommended)`
+### Zero-Config Scaffolding (Recommended)
 
 The CLI provides a pre-architected integration at `src/NotificationHandler/`.
 
-#### PushNotificationManager.tsx`
-A Client Component that monitors `usePushMessage` to handle:
--   **Token Logging**: Logs the current FCM token for development.
-*   **Foreground Toasts**: Provides a hook to plug in a toast library for active-tab notifications.
-*   **Permission Monitoring**: Emits warnings if permissions are denied.
+**TypeScript project** generates:
+- `PushNotificationManager.tsx` — monitors `usePushMessage` to handle foreground toasts, token logging, and permission status
+- `config.ts` — reads FCM values from `.env` using `process.env.FCM_*` (React) or `process.env.NEXT_PUBLIC_FCM_*` (Next.js)
+- `pushHelper.ts` — `usePushNotification()` hook that reads from `our_pkg.json`
 
-#### pushConfig.ts`
-An automated configuration file that spreads values from your `our_pkg.json`. This ensures that updating the CLI config also updates your app's frontend configuration.
+**JavaScript project** generates the exact same files with different extensions:
+- `PushNotificationManager.jsx`
+- `config.js`
+- `pushHelper.js`
 
-#### USAGE.md`
-A localized integration guide with copy-pasteable snippets for layouts and UI components.
+Both variants include `USAGE.md` with copy-pasteable integration snippets.
 
 ---
 
@@ -301,6 +312,10 @@ export interface ProjectInfo {
   backendFramework: BackendFramework
   scope: Scope
   hasTsConfig: boolean
+  isNextJs: boolean
+  nextRouterType: 'app' | 'pages' | null  // null when isNextJs is false
+  isVite: boolean
+  hasFirebaseAdmin: boolean
   packageJson: Record<string, any>
 }
 ```

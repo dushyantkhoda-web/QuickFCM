@@ -1,9 +1,9 @@
 # Installation Guide
 
-##  Installation Options
+## Installation Options
 
 ### Option 1: npx (Recommended)
-No installation required - runs directly from npm:
+No installation required — runs directly from npm:
 
 ```bash
 npx quick-fcm init
@@ -18,183 +18,244 @@ quick-fcm init
 ```
 
 ### Option 3: Local Dev Install
-Install as dev dependency in your project:
+Install as a dev dependency in your project:
 
 ```bash
 npm install --save-dev quick-fcm
 npx quick-fcm init
 ```
 
+---
+
 ## System Requirements
 
 ### Required
 - **Node.js**: >= 18.0.0
 - **npm**: >= 8.0.0
-- **React Project**: Any React-based application
+- **Project type**: React or Next.js frontend project
+
+> **Note**: If the CLI detects that the project has neither `react` nor `next` in its dependencies, it exits immediately with:
+> ```
+> ✖  This project does not use React or Next.js.
+>    custom-push only supports React and Next.js frontend projects.
+> ```
 
 ### Optional (for backend features)
 - **Express**: >= 4.0.0
 - **NestJS**: >= 9.0.0
-- **Firebase Admin SDK**: >= 12.0.0 (Mandatory for backend)
+- **Firebase Admin SDK**: >= 12.0.0 (required for backend scaffolding)
+
+---
 
 ## Quick Setup
 
-### 1. Professional Backend-Only Setup (Zero Fluff)
-If you only need a notification engine for your server:
+### 1. Backend-Only Setup
+If you only need a notification engine for your server (no frontend):
 
 ```bash
 npx quick-fcm init --backend-only
 ```
-- **Detection**: Checks for `firebase-admin` in your `package.json`.
-- **Naming**: Generates `FCMHelper.js/ts` in `src/helper/`.
-- **Conflicts**: Smart date-based suffixes (e.g., `FCMHelper-27-03.js`) if already exists.
+- Skips React/Next.js detection and frontend file generation
+- Generates `FCMHelper.js/ts` and routes in `src/helper/`
 
 ### 2. Standard Full Setup
-For projects requiring both frontend and backend integration:
+For projects needing both frontend and backend:
 
 ```bash
 npx quick-fcm init
 ```
+
+---
 
 ## Firebase Setup Instructions
 
 ### Step 1: Create Firebase Project
 1. Visit [Firebase Console](https://console.firebase.google.com)
-2. Click "Add project"
-3. Enter project name
-4. Enable Google Analytics (optional)
-5. Click "Create project"
+2. Click **Add project** and enter a project name
+3. Click **Create project**
 
 ### Step 2: Add Web App
-1. In your project dashboard, click "Add app"
-2. Choose Web icon (</>)
-3. Enter app nickname
-4. Click "Register app"
-5. Copy the Firebase config object - you'll need this for the CLI
+1. In your project dashboard, click **Add app** → Web icon (`</>`)
+2. Enter an app nickname and click **Register app**
+3. Copy the Firebase config object — the CLI will ask for these values
 
 ### Step 3: Enable Cloud Messaging
-1. Go to Project Settings → Cloud Messaging
+1. Go to **Project Settings → Cloud Messaging**
 2. Ensure Cloud Messaging API is enabled
-3. Generate VAPID key pair
-4. Copy the VAPID key for the CLI
+3. Generate a **VAPID key pair** (Web Push certificates section)
+4. Copy the VAPID key — the CLI will ask for it
 
 ### Step 4: (Optional) Service Account
-For backend features, you'll need a service account:
+Required only for backend features:
 
-1. Go to Project Settings → Service Accounts
-2. Click "Generate new private key"
-3. Download the JSON file
-4. Keep it secure - never commit to git
+1. Go to **Project Settings → Service Accounts**
+2. Click **Generate new private key**
+3. Download the JSON file — keep it secure, never commit it to git
+
+---
 
 ## Project Detection
 
-The CLI automatically detects:
+When you run `npx quick-fcm init`, the CLI analyses your project automatically. Here's exactly what it detects:
 
-### Frontend Stack
-- **TypeScript**: Checks for `tsconfig.json`.
-- **React**: Reads version from `package.json`.
-- **Firebase**: Validates client SDK version.
+### Framework
+| Condition | Result | Log shown |
+|---|---|---|
+| `next` in `dependencies` or `devDependencies` | Next.js | `✓  Detected framework: Next.js (App Router)` or `(Pages Router)` |
+| `next` absent, `react` present | React | `✓  Detected framework: React` |
+| Neither `next` nor `react` | **Exit** | `✖  This project does not use React or Next.js.` |
+
+### Next.js Router Type
+The CLI checks your project's folder structure:
+
+| Folder found | Router type |
+|---|---|
+| `app/` directory at project root | App Router |
+| `pages/` directory at project root | Pages Router |
+| Neither found | Assumes App Router, logs: `ℹ  Could not detect router type. Assuming App Router.` |
+
+### Language
+- Checks for `tsconfig.json` → **TypeScript** (generates `.ts`/`.tsx` files)
+- No `tsconfig.json` → **JavaScript** (generates `.js`/`.jsx` files)
 
 ### Backend Stack
-- **Firebase Admin**: Checks for `firebase-admin` dependency.
-- **Frameworks**: Detects NestJS (`@nestjs/core`) or Express.
+- `@nestjs/core` in deps → NestJS
+- `express` in deps → Express
+- Neither → frontend-only
 
-### Project Structure
-- **src/ directory**: Targets `src/helper/` for backend-only.
-- **public/ directory**: Skipped in backend-only; created for frontend SW.
+---
 
-## Environment Setup
+## Dependency Auto-Install
 
-### Development Environment
-```bash
-# Ensure Node.js version
-node --version  # Should be >= 18.0.0
+Before generating any files, the CLI checks whether `firebase` and `quick-fcm` are already installed in your project. If either is missing, it installs them automatically.
 
-# Ensure npm version  
-npm --version   # Should be >= 8.0.0
+**Package manager detection** (checks for lockfiles):
+- `pnpm-lock.yaml` → uses `pnpm`
+- `yarn.lock` → uses `yarn`
+- Otherwise → uses `npm`
 
-# Verify React project
-ls package.json # Should exist
+**Versions installed:**
+- `quick-fcm` — always the same version as the running CLI
+- `firebase` — a tested, pinned version from the CLI's `pinnedDeps`
+
+If you already have either package installed, it is silently skipped. If an install fails, a warning is shown and setup continues — you can install manually.
+
+---
+
+## Environment Variables
+
+The CLI writes your Firebase config to `.env` automatically during init. Keys follow this naming scheme based on your detected framework:
+
+### Next.js projects
+```env
+NEXT_PUBLIC_FCM_API_KEY=your-api-key
+NEXT_PUBLIC_FCM_AUTH_DOMAIN=your-project.firebaseapp.com
+NEXT_PUBLIC_FCM_PROJECT_ID=your-project-id
+NEXT_PUBLIC_FCM_STORAGE_BUCKET=your-project.appspot.com
+NEXT_PUBLIC_FCM_MESSAGING_SENDER_ID=123456789
+NEXT_PUBLIC_FCM_APP_ID=1:123:web:abc
+NEXT_PUBLIC_FCM_VAPID_KEY=your-vapid-key
 ```
 
-### Production Environment
-```bash
-# Install dependencies
-npm install
-
-# Build project
-npm run build
-
-# Run CLI
-npx quick-fcm init
+### React projects (including Vite)
+```env
+FCM_API_KEY=your-api-key
+FCM_AUTH_DOMAIN=your-project.firebaseapp.com
+FCM_PROJECT_ID=your-project-id
+FCM_STORAGE_BUCKET=your-project.appspot.com
+FCM_MESSAGING_SENDER_ID=123456789
+FCM_APP_ID=1:123:web:abc
+FCM_VAPID_KEY=your-vapid-key
 ```
+
+> **Re-running `init`** merges values in-place — existing keys are updated on the same line, new keys are appended. No duplicate keys are ever written. All other lines (comments, unrelated keys) are preserved exactly.
+
+---
+
+## Generated File Structure
+
+After a successful `init`, these files are created:
+
+### TypeScript project
+```
+public/
+  firebase-messaging-sw.js        ← Service worker (background push)
+src/
+  NotificationHandler/
+    PushNotificationManager.tsx   ← Foreground toast handler
+    config.ts                     ← Firebase config (reads from .env)
+    pushHelper.ts                 ← usePushNotification hook
+    USAGE.md                      ← Integration guide
+our_pkg.json                      ← CLI configuration
+```
+
+### JavaScript project
+```
+public/
+  firebase-messaging-sw.js        ← Service worker (background push)
+src/
+  NotificationHandler/
+    PushNotificationManager.jsx   ← Foreground toast handler
+    config.js                     ← Firebase config (reads from .env)
+    pushHelper.js                 ← usePushNotification hook
+    USAGE.md                      ← Integration guide
+our_pkg.json                      ← CLI configuration
+```
+
+---
+
+## Verify Installation
+
+### Test the CLI
+```bash
+npx quick-fcm --help    # Shows CLI help
+npx quick-fcm --version # Shows current version
+npx quick-fcm init       # Starts interactive setup
+```
+
+### Check Generated Files
+```bash
+ls public/firebase-messaging-sw.js          # Service worker
+ls src/NotificationHandler/config.ts         # TS config (or config.js for JS)
+ls our_pkg.json                              # CLI configuration
+```
+
+---
 
 ## Troubleshooting Installation
 
-### Common Issues
-
-**"command not found: QuickFCM"**
+**`command not found: quick-fcm`**
 ```bash
-# Use npx instead
-npx quick-fcm init
-
-# Or reinstall globally
-npm uninstall -g quick-fcm
-npm install -g quick-fcm
+npx quick-fcm init   # No install needed with npx
+# Or reinstall globally:
+npm uninstall -g quick-fcm && npm install -g quick-fcm
 ```
 
-**"Permission denied"**
+**`Permission denied`**
 ```bash
-# Fix npm permissions
 sudo chown -R $(whoami) ~/.npm
-
 # Or use npx (no permissions needed)
 npx quick-fcm init
 ```
 
-**"Node.js version too old"**
+**`Node.js version too old`**
 ```bash
-# Update Node.js using nvm
-nvm install 18
-nvm use 18
-
-# Or download from nodejs.org
+nvm install 18 && nvm use 18
 ```
 
-**"package.json not found"**
+**`package.json not found`**
 ```bash
-# Ensure you're in project root
-cd your-react-project
-ls package.json  # Should exist
-
-# Or create new React project
-npx create-react-app new-project
-cd new-project
+cd your-react-project   # Run from project root
+ls package.json          # Should exist
 ```
-
-### Network Issues
 
 **Slow download / timeout**
 ```bash
-# Clear npm cache
 npm cache clean --force
-
-# Use different registry
-npm config set registry https://registry.npmjs.org/
-
-# Try again
 npx quick-fcm init
 ```
 
-**Corporate proxy**
-```bash
-# Configure npm proxy
-npm config set proxy http://proxy.company.com:8080
-npm config set https-proxy http://proxy.company.com:8080
-
-# Or use npx with proxy
-https_proxy=http://proxy.company.com:8080 npx quick-fcm init
-```
+---
 
 ## IDE Integration
 
@@ -209,53 +270,22 @@ Add to `.vscode/settings.json`:
 }
 ```
 
-### WebStorm
-1. File → Settings → Languages & Frameworks → TypeScript
-2. Enable TypeScript Compiler
-3. Add `node_modules` to excluded directories
-
-## Verify Installation
-
-### Test CLI Works
-```bash
-npx quick-fcm --help
-# Should show CLI help
-
-npx quick-fcm init
-# Should start the interactive setup
-```
-
-### Check Generated Files
-After running the CLI, verify these files exist:
-```bash
-ls public/firebase-messaging-sw.js  # Service worker
-ls src/push/pushHelper.ts           # Frontend helper (or .js)
-ls our_pkg.json                     # Configuration
-```
-
-### Test Integration
-Add to your React app:
-```typescript
-import { usePush } from './push/pushHelper'
-
-function App() {
-  usePush()
-  return <div>App with push notifications!</div>
-}
-```
+---
 
 ## Next Steps
 
 After successful installation:
 
-1. **Read the main README** for usage instructions
-2. **Check the API documentation** for advanced features
-3. **Review the troubleshooting guide** for common issues
-4. **Explore examples** for different use cases
+1. Read the **[Quick Start in README](../README.md#quick-start)** for integration steps
+2. Check **`src/NotificationHandler/USAGE.md`** (generated) for copy-pasteable code
+3. See **[Examples](./EXAMPLES.md)** for Next.js, React, and JavaScript patterns
+4. Read **[FAQ](./FAQ.md)** for common questions
+
+---
 
 ## Related Documentation
 
-- [Main README](./README.md) - Full usage guide
-- [API Reference](./API.md) - Detailed API documentation  
-- [Troubleshooting](./TROUBLESHOOTING.md) - Common issues and solutions
-- [Examples](./EXAMPLES.md) - Code examples and patterns
+- [Main README](../README.md) — Full usage guide
+- [API Reference](./API.md) — Detailed API documentation
+- [Troubleshooting](./TROUBLESHOOTING.md) — Common issues and solutions
+- [Examples](./EXAMPLES.md) — Code examples and patterns

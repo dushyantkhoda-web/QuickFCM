@@ -14,19 +14,36 @@
 
 The CLI automatically scaffolds a `src/NotificationHandler/` directory designed for almost zero-effort integration.
 
-### 1. Minimal App Wrap
-Simply wrap your application with the pre-configured provider and manager.
+### 1. Minimal App Wrap (TypeScript)
 
 ```tsx
-// layout.tsx or App.tsx
+// app/layout.tsx (Next.js) or src/App.tsx (React)
 import { CustomPushProvider } from 'quick-fcm';
-import { pushConfig } from './src/NotificationHandler/pushConfig';
-import { PushNotificationManager } from './src/NotificationHandler/PushNotificationManager';
+import { pushConfig } from './NotificationHandler/config';                         // generated
+import { PushNotificationManager } from './NotificationHandler/PushNotificationManager'; // generated
 
 export default function RootLayout({ children }) {
   return (
     <CustomPushProvider config={pushConfig}>
-      {/* 💎 Global logic: handles all tokens and foreground notifications */}
+      {/* Global handler: tokens, foreground notifications, permission monitoring */}
+      <PushNotificationManager />
+      {children}
+    </CustomPushProvider>
+  );
+}
+```
+
+### 1b. Minimal App Wrap (JavaScript)
+
+```jsx
+// src/App.jsx (React JS project)
+import { CustomPushProvider } from 'quick-fcm';
+import { pushConfig } from './NotificationHandler/config';                          // generated
+import { PushNotificationManager } from './NotificationHandler/PushNotificationManager'; // generated
+
+export default function App({ children }) {
+  return (
+    <CustomPushProvider config={pushConfig}>
       <PushNotificationManager />
       {children}
     </CustomPushProvider>
@@ -35,10 +52,10 @@ export default function RootLayout({ children }) {
 ```
 
 ### 2. Customizing Notification UX
-Open `PushNotificationManager.tsx` to plug in your favorite toast library:
+Open `PushNotificationManager.tsx` (or `.jsx` for JS projects) to plug in your favourite toast library:
 
 ```tsx
-// PushNotificationManager.tsx snippet
+// PushNotificationManager snippet
 useEffect(() => {
   if (messages.length > 0) {
     const lastMessage = messages[messages.length - 1];
@@ -50,7 +67,7 @@ useEffect(() => {
 ```
 
 ### 3. Permission Button
-See the `USAGE.md` in your scaffolded folder for a professional toggle button example.
+See the `USAGE.md` in your scaffolded `NotificationHandler/` folder for a professional toggle button example.
 
 ---
 
@@ -242,21 +259,21 @@ function App() {
 ##  Frontend Package Integration (Recommended)
 
 ### 1. Root Provider Setup
-Wrap your entire application with the `<CustomPushProvider>` to enable the push notification engine.
+Wrap your entire application with the `<CustomPushProvider>`. The `config` values come from your `.env` file, which the CLI writes automatically.
 
 ```typescript
-// index.tsx / App.tsx
+// index.tsx / App.tsx (TypeScript + React)
 import { CustomPushProvider } from 'quick-fcm';
 
 const pushConfig = {
-  apiKey: "your-api-key",
-  authDomain: "your-project.firebaseapp.com",
-  projectId: "your-project-id",
-  storageBucket: "your-project.appspot.com",
-  messagingSenderId: "123456789",
-  appId: "1:123456789:web:abcdef",
-  vapidKey: "your-vapid-key",
-  registerUrl: "https://your-api.com/push/register"
+  apiKey:            process.env.FCM_API_KEY!,
+  authDomain:        process.env.FCM_AUTH_DOMAIN!,
+  projectId:         process.env.FCM_PROJECT_ID!,
+  storageBucket:     process.env.FCM_STORAGE_BUCKET!,
+  messagingSenderId: process.env.FCM_MESSAGING_SENDER_ID!,
+  appId:             process.env.FCM_APP_ID!,
+  vapidKey:          process.env.FCM_VAPID_KEY!,
+  registerUrl: 'https://your-api.com/push/register'  // optional
 };
 
 function Root() {
@@ -267,6 +284,10 @@ function Root() {
   );
 }
 ```
+
+> **Next.js**: Use `NEXT_PUBLIC_FCM_API_KEY` etc. instead — the CLI writes these automatically.
+
+> **Tip**: If you used `npx quick-fcm init`, the `NotificationHandler/config` file is already pre-wired to your `.env` — you don't need to write this manually.
 
 ### 2. Requesting Permission & Getting Token
 Use the `usePushMessage` hook to trigger the permission prompt and access the FCM token.
@@ -318,7 +339,10 @@ return (
 ```
 
 ### Next.js App Router Integration
-In Next.js App Router, context providers must be Client Components. We recommend creating a separate client wrapper.
+
+> **Zero-config users**: If you ran `npx quick-fcm init`, the CLI already generated `src/NotificationHandler/` with `'use client'` directives. Simply import and use as shown in the [Zero-Config section](#zero-config-integration-recommended).
+
+For manual setup or when you need a custom client wrapper:
 
 #### 1. Create a Client Wrapper
 ```typescript
@@ -329,8 +353,13 @@ import { CustomPushProvider } from 'quick-fcm';
 
 export function PushProviderWrapper({ children }: { children: React.ReactNode }) {
   const pushConfig = {
-    apiKey: "...",
-    // ... rest of your config
+    apiKey:            process.env.NEXT_PUBLIC_FCM_API_KEY!,
+    authDomain:        process.env.NEXT_PUBLIC_FCM_AUTH_DOMAIN!,
+    projectId:         process.env.NEXT_PUBLIC_FCM_PROJECT_ID!,
+    storageBucket:     process.env.NEXT_PUBLIC_FCM_STORAGE_BUCKET!,
+    messagingSenderId: process.env.NEXT_PUBLIC_FCM_MESSAGING_SENDER_ID!,
+    appId:             process.env.NEXT_PUBLIC_FCM_APP_ID!,
+    vapidKey:          process.env.NEXT_PUBLIC_FCM_VAPID_KEY!,
   };
 
   return (

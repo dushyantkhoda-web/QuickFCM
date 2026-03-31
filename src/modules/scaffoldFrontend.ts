@@ -12,6 +12,7 @@ import {
   SERVICE_WORKER_FILENAME,
   SERVICE_WORKER_FALLBACK_FILENAME,
   FRONTEND_MANAGER_TPL,
+  FRONTEND_MANAGER_JSX,
   FRONTEND_CONFIG_TPL,
   FRONTEND_USAGE_TPL,
 } from '../constants'
@@ -64,13 +65,27 @@ export async function scaffoldFrontend(context: CLIContext): Promise<ScaffoldedF
   const helperPath = path.join(handlerDir, `pushHelper.${ext}`)
 
   // ── 3. Zero-Config Handler Files ──────────────────────────────────────
-  const managerTemplate = await readFile(path.join(TEMPLATES_DIR, FRONTEND_MANAGER_TPL))
-  const configTemplate = await readFile(path.join(TEMPLATES_DIR, FRONTEND_CONFIG_TPL))
-  const usageTemplate = await readFile(path.join(TEMPLATES_DIR, FRONTEND_USAGE_TPL))
+  const isTs = project.language === 'typescript'
+  const envPrefix = project.isNextJs ? 'NEXT_PUBLIC_' : ''
 
-  const managerPath = path.join(handlerDir, `PushNotificationManager.${project.language === 'typescript' ? 'tsx' : 'js'}`)
-  const configPath = path.join(handlerDir, `config.${ext}`)
-  const usagePath = path.join(handlerDir, 'USAGE.md')
+  // Manager: .tsx for TS, .jsx for JS
+  const managerTplName = isTs ? FRONTEND_MANAGER_TPL : FRONTEND_MANAGER_JSX
+  const managerTemplate = await readFile(path.join(TEMPLATES_DIR, managerTplName))
+  const configTemplate  = await readFile(path.join(TEMPLATES_DIR, FRONTEND_CONFIG_TPL))
+  const usageTemplate   = await readFile(path.join(TEMPLATES_DIR, FRONTEND_USAGE_TPL))
+
+  // Output extensions
+  const managerExt = isTs ? 'tsx' : 'jsx'
+  const configExt  = isTs ? 'ts'  : 'js'
+
+  const managerPath = path.join(handlerDir, `PushNotificationManager.${managerExt}`)
+  const configPath  = path.join(handlerDir, `config.${configExt}`)
+  const usagePath   = path.join(handlerDir, 'USAGE.md')
+
+  // Template vars for pushConfig — aligns with Phase 2 FCM_ key names
+  const configVars: Record<string, string> = {
+    ENV_PREFIX: envPrefix,
+  }
 
   // ── Run conflict checks ───────────────────────────────────────────────
   const filesToWrite = [
@@ -91,7 +106,7 @@ export async function scaffoldFrontend(context: CLIContext): Promise<ScaffoldedF
     },
     {
       path: configPath,
-      content: configTemplate,
+      content: renderTemplate(configTemplate, configVars),
       description: 'Firebase configuration file',
     },
     {

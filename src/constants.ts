@@ -21,6 +21,7 @@ export const SW_TEMPLATE = 'sw.template.js'
 export const FRONTEND_HELPER_TS = 'frontend/pushHelper.ts.tpl'
 export const FRONTEND_HELPER_JS = 'frontend/pushHelper.js.tpl'
 export const FRONTEND_MANAGER_TPL = 'frontend/PushNotificationManager.tsx.tpl'
+export const FRONTEND_MANAGER_JSX = 'frontend/PushNotificationManager.jsx.tpl'
 export const FRONTEND_CONFIG_TPL = 'frontend/pushConfig.ts.tpl'
 export const FRONTEND_USAGE_TPL = 'frontend/USAGE.md.tpl'
 
@@ -37,9 +38,12 @@ export const NOTIFICATION_CONFIG_TPL = 'backend/notification-config.json.tpl'
 // ── Files-mode template names ───────────────────────────────────────────────
 export const FILES_MODE_DIR = 'files-mode'
 export const FILES_MODE_PROVIDER = 'files-mode/pushProvider.tsx.tpl'
+export const FILES_MODE_PROVIDER_JSX = 'files-mode/pushProvider.jsx.tpl'
 export const FILES_MODE_HOOK = 'files-mode/usePushMessage.ts.tpl'
+export const FILES_MODE_HOOK_JS = 'files-mode/usePushMessage.js.tpl'
 export const FILES_MODE_CONFIG = 'files-mode/pushConfig.ts.tpl'
 export const FILES_MODE_TOKEN = 'files-mode/getPushToken.ts.tpl'
+export const FILES_MODE_TOKEN_JS = 'files-mode/getPushToken.js.tpl'
 export const FILES_MODE_USAGE = 'files-mode/USAGE.md.tpl'
 
 // ── Required credentials fields ─────────────────────────────────────────────
