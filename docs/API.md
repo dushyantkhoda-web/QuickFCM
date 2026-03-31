@@ -94,21 +94,6 @@ interface OurPackageJson {
 }
 ```
 
-### Environment Variables written to `.env`
-
-The CLI writes these keys automatically. The prefix depends on the detected framework:
-
-| Key (bare name) | Next.js `.env` | React `.env` |
-|---|---|---|
-| FCM_API_KEY | `NEXT_PUBLIC_FCM_API_KEY` | `FCM_API_KEY` |
-| FCM_AUTH_DOMAIN | `NEXT_PUBLIC_FCM_AUTH_DOMAIN` | `FCM_AUTH_DOMAIN` |
-| FCM_PROJECT_ID | `NEXT_PUBLIC_FCM_PROJECT_ID` | `FCM_PROJECT_ID` |
-| FCM_STORAGE_BUCKET | `NEXT_PUBLIC_FCM_STORAGE_BUCKET` | `FCM_STORAGE_BUCKET` |
-| FCM_MESSAGING_SENDER_ID | `NEXT_PUBLIC_FCM_MESSAGING_SENDER_ID` | `FCM_MESSAGING_SENDER_ID` |
-| FCM_APP_ID | `NEXT_PUBLIC_FCM_APP_ID` | `FCM_APP_ID` |
-| FCM_VAPID_KEY | `NEXT_PUBLIC_FCM_VAPID_KEY` | `FCM_VAPID_KEY` |
-
-Running `init` more than once merges values in-place — no duplicate keys, all other `.env` content preserved.
 
 ## Frontend API (React Package)
 
@@ -170,23 +155,22 @@ const {
 | `sendMessage` | `(title: string, body: string, data?: object) => Promise<void>` | Sends a test notification via your backend `registerUrl`. |
 | `isSupported` | `boolean` | Whether the current browser supports Web Push. |
 | `isPermissionGranted` | `boolean` | Current status of browser notification permissions. |
-| `isTabActive` | `boolean` | Whether the browser tab is currently focused. |
+| `clearMessages` | `() => void` | Clears the local messages array. |
 
 ---
 
 ### Zero-Config Scaffolding (Recommended)
 
-The CLI provides a pre-architected integration at `src/NotificationHandler/`.
+The CLI provides a pre-architected `NotificationHandler/` directory (inside `src/` when your project uses one).
 
 **TypeScript project** generates:
-- `PushNotificationManager.tsx` — monitors `usePushMessage` to handle foreground toasts, token logging, and permission status
-- `config.ts` — reads FCM values from `.env` using `process.env.FCM_*` (React) or `process.env.NEXT_PUBLIC_FCM_*` (Next.js)
-- `pushHelper.ts` — `usePushNotification()` hook that reads from `quickfcm.config.json`
+- `PushNotificationManager.tsx` — handles foreground toasts, token logging, and permission status
+- `config.ts` — reads FCM credentials directly from `quickfcm.config.json` (no `.env` needed)
+- `pushHelper.ts` — Firebase initialization hook
 
-**JavaScript project** generates the exact same files with different extensions:
-- `PushNotificationManager.jsx`
-- `config.js`
-- `pushHelper.js`
+**JavaScript project** generates the exact same files. Extension is detected from your project:
+- `.jsx` if your project already has `.jsx` files (Vite / CRA style)
+- `.js` if your project uses plain `.js` (Next.js JS default)
 
 Both variants include `USAGE.md` with copy-pasteable integration snippets.
 
@@ -331,59 +315,43 @@ export interface CLIContext {
 }
 ```
 
-## Events
+## usePush hook (Low-Level API)
 
-### Frontend Events
-
-The push system emits several events during its lifecycle:
-
-#### push:ready`
- Fired when push notifications are ready and token is available.
+For advanced use cases where you want full control outside of `<CustomPushProvider>`.
 
 ```typescript
+import { usePush } from 'quick-fcm';
+import { pushConfig } from './NotificationHandler/config';
+
 usePush({
-  onReady: (token) => {
-    console.log('Push ready, token:', token)
-    // Send token to backend
-  }
+  config: pushConfig,
+
+  // Called when any foreground message arrives
+  onMessage: (message) => {
+    console.log('Received:', message.title)
+  },
+
+  // Called when a message arrives while the tab is visible — use for in-app toasts
+  onToast: (message) => {
+    toast(message.title, { description: message.body })
+  },
+
+  // Called when the FCM token is first retrieved or changes
+  onTokenChange: (token) => {
+    // Send to your backend
+    fetch('/push/register', { method: 'POST', body: JSON.stringify({ token }) })
+  },
 })
 ```
 
-#### push:message`
-Received when a push notification arrives while app is in foreground.
+#### usePush Options
 
-```typescript
-usePush({
-  onMessage: (payload) => {
-    console.log('Push message:', payload)
-    // Handle foreground notification
-  }
-})
-```
-
-#### push:permission_denied`
-Fired when user denies notification permission.
-
-```typescript
-usePush({
-  onPermissionDenied: () => {
-    console.log('Permission denied')
-    // Show custom permission UI
-  }
-})
-```
-
-#### push:error`
-Fired when any error occurs.
-
-```typescript
-usePush({
-  onError: (error) => {
-    console.error('Push error:', error)
-    // Handle error gracefully
-  }
-})
-```
+| Option | Type | Description |
+|--------|------|-------------|
+| `config` | `PushConfig` | (Required) Firebase config from `quickfcm.config.json` |
+| `onMessage` | `(message: PushMessage) => void` | Called for every foreground push (background/foreground) |
+| `onToast` | `(message: PushMessage) => void` | Called **only** when tab is visible — for in-app toast notifications |
+| `onTokenChange` | `(token: string) => void` | Called when FCM token is first obtained or refreshed |
 
 ### Service Worker Events
 

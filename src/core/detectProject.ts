@@ -1,4 +1,5 @@
 import * as path from 'path'
+import * as fs from 'fs/promises'
 import { ProjectInfo, Language, BackendFramework, Scope } from '../types'
 import { logger } from '../utils/logger'
 import { fileExists, readJson, ensureDir } from '../utils/fileUtils'
@@ -47,10 +48,16 @@ export async function detectProject(cwd: string, options: { backendOnly?: boolea
   }
 
   // ── Next.js router type detection ────────────────────────────────────
+  // Check both root-level (no src/) and src/-level (with src/) directories
   let nextRouterType: 'app' | 'pages' | null = null
   if (isNextJs) {
-    const hasAppDir = await fileExists(path.join(rootDir, 'app'))
-    const hasPagesDir = await fileExists(path.join(rootDir, 'pages'))
+    const hasSrcDir = await fileExists(path.join(rootDir, 'src'))
+    const hasAppDir =
+      (await fileExists(path.join(rootDir, 'app'))) ||
+      (hasSrcDir && (await fileExists(path.join(rootDir, 'src', 'app'))))
+    const hasPagesDir =
+      (await fileExists(path.join(rootDir, 'pages'))) ||
+      (hasSrcDir && (await fileExists(path.join(rootDir, 'src', 'pages'))))
 
     if (hasAppDir) {
       nextRouterType = 'app'
@@ -90,6 +97,54 @@ export async function detectProject(cwd: string, options: { backendOnly?: boolea
     }
   }
 
+  // ── JSX extension detection ───────────────────────────────────────────
+  // Scan srcDir (1 level deep) for user's component file extension convention.
+  // We check BOTH TypeScript and JavaScript projects.
+  //
+  // TypeScript:
+  //   - Has .tsx files → user uses .tsx for JSX components (standard convention)
+  //   - No .tsx files  → user uses .ts only (e.g. fresh project, or backend-only TS)
+  //                     We still generate .tsx for JSX components — TypeScript
+  //                     REQUIRES .tsx for any file containing JSX syntax.
+  //
+  // JavaScript:
+  //   - Has .jsx files → user uses .jsx (Vite / CRA style)
+  //   - No .jsx files  → user uses .js  (Next.js JS default, zero .jsx files)
+
+  // Shared shallow scanner
+  const scanForExt = async (dir: string, ext: string): Promise<boolean> => {
+    try {
+      const entries = await fs.readdir(dir, { withFileTypes: true })
+      for (const entry of entries) {
+        if (entry.isFile() && entry.name.endsWith(ext)) return true
+        if (entry.isDirectory()) {
+          try {
+            const sub = await fs.readdir(path.join(dir, entry.name), { withFileTypes: true })
+            if (sub.some(e => e.isFile() && e.name.endsWith(ext))) return true
+          } catch { /* skip unreadable */ }
+        }
+      }
+    } catch { /* dir unreadable — fallback */ }
+    return false
+  }
+
+  let jsxExtension: 'tsx' | 'jsx' | 'js'
+
+  if (language === 'typescript') {
+    // TypeScript REQUIRES .tsx for JSX. Even if user has no .tsx yet (brand-new project),
+    // we must generate .tsx for JSX component files or TypeScript will error.
+    // Scan is still done so we can log an accurate message to the user.
+    const hasTsx = await scanForExt(srcDir, '.tsx')
+    jsxExtension = 'tsx'  // always tsx for TS
+    if (!hasTsx) {
+      logger.info('ℹ  No .tsx files detected. Generating .tsx for JSX components (TypeScript requires this).')
+    }
+  } else {
+    // JavaScript: mirror the user's existing convention
+    const hasJsx = await scanForExt(srcDir, '.jsx')
+    jsxExtension = hasJsx ? 'jsx' : 'js'
+  }
+
   return {
     rootDir,
     srcDir,
@@ -106,5 +161,6 @@ export async function detectProject(cwd: string, options: { backendOnly?: boolea
     isVite,
     hasFirebaseAdmin,
     packageJson,
+    jsxExtension,
   }
 }

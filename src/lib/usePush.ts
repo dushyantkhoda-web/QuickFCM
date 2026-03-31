@@ -7,10 +7,12 @@ import { getPushToken } from './getPushToken'
 interface UsePushOptions {
   config: PushConfig
   onMessage?: (message: PushMessage) => void
+  /** Called when a push arrives while the tab is active (foreground). Use this to show an in-app toast. */
+  onToast?: (message: PushMessage) => void
   onTokenChange?: (token: string) => void
 }
 
-export function usePush({ config, onMessage: onMsg, onTokenChange }: UsePushOptions) {
+export function usePush({ config, onMessage: onMsg, onToast, onTokenChange }: UsePushOptions) {
   const initialized = useRef(false)
 
   useEffect(() => {
@@ -48,6 +50,13 @@ export function usePush({ config, onMessage: onMsg, onTokenChange }: UsePushOpti
           timestamp: Date.now(),
         }
         onMsg?.(message)
+        if (document.visibilityState === 'visible' && onToast) {
+          try {
+            onToast(message)
+          } catch (toastErr: any) {
+            console.error('[push] onToast callback threw an error:', toastErr.message)
+          }
+        }
       })
     })()
   }, [])

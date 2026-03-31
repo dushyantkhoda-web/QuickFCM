@@ -160,35 +160,39 @@ To update a credential, edit `quickfcm.config.json` directly.
 
 After a successful `init`, these files are created:
 
-### TypeScript project
+### TypeScript project (with `src/` directory)
 ```
 public/
-  firebase-messaging-sw.js          ← Service worker (background push)
-components/
-  PushProvider.tsx                  ← 'use client' layout wrapper (Next.js only)
+  firebase-messaging-sw.js            ← Service worker (background push)
 src/
+  components/
+    PushProvider.tsx                  ← 'use client' layout wrapper (Next.js only)
   NotificationHandler/
-    PushNotificationManager.tsx     ← Foreground toast handler
-    config.ts                       ← Firebase config (reads from quickfcm.config.json)
-    pushHelper.ts                   ← usePushNotification hook
-    USAGE.md                        ← Integration guide
-quickfcm.config.json                ← CLI configuration (auto-added to .gitignore)
+    PushNotificationManager.tsx       ← Foreground toast handler
+    config.ts                         ← Firebase config (reads from quickfcm.config.json)
+    pushHelper.ts                     ← Firebase initialization hook
+    USAGE.md                          ← Integration guide
+quickfcm.config.json                  ← CLI configuration (auto-added to .gitignore)
+```
+
+### TypeScript project (without `src/` directory)
+```
+public/
+  firebase-messaging-sw.js
+components/
+  PushProvider.tsx                    ← 'use client' layout wrapper (Next.js only)
+NotificationHandler/
+  PushNotificationManager.tsx
+  config.ts
+  pushHelper.ts
+  USAGE.md
+quickfcm.config.json
 ```
 
 ### JavaScript project
-```
-public/
-  firebase-messaging-sw.js          ← Service worker (background push)
-components/
-  PushProvider.jsx                  ← 'use client' layout wrapper (Next.js only)
-src/
-  NotificationHandler/
-    PushNotificationManager.jsx     ← Foreground toast handler
-    config.js                       ← Firebase config (reads from quickfcm.config.json)
-    pushHelper.js                   ← usePushNotification hook
-    USAGE.md                        ← Integration guide
-quickfcm.config.json                ← CLI configuration (auto-added to .gitignore)
-```
+Same structure as above, using your project's existing convention:
+- `.jsx` extension if your project already contains `.jsx` files (Vite / CRA style)
+- `.js` extension if your project uses plain `.js` (Next.js default JS setup)
 
 ---
 

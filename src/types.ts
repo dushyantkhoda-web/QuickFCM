@@ -44,6 +44,15 @@ export interface ProjectInfo {
   isVite: boolean
   hasFirebaseAdmin: boolean             // check for 'firebase-admin' in deps
   packageJson: Record<string, any>
+  /**
+   * Extension to use for JSX component files, detected from the user's existing project:
+   *   'tsx' — TypeScript project (TypeScript requires .tsx for JSX; generated even if no .tsx found yet)
+   *   'jsx' — JavaScript project with existing .jsx files (Vite, CRA style)
+   *   'js'  — JavaScript project with no .jsx files (Next.js default JS setup)
+   *
+   * Note: non-JSX files (pushHelper, config) always use plain .ts/.js regardless of this field.
+   */
+  jsxExtension: 'tsx' | 'jsx' | 'js'
 }
 
 export interface UserAnswers {

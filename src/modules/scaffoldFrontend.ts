@@ -65,16 +65,29 @@ export async function scaffoldFrontend(context: CLIContext): Promise<ScaffoldedF
   const helperContent = await readFile(helperTemplatePath)
 
   // ── Ensure directories exist ──────────────────────────────────────────
+  // hasSrc: true when srcDir !== rootDir (user chose yes to src/ in create-next-app)
+  // Controls the relative depth from NotificationHandler/ to quickfcm.config.json:
+  //   with src/:    src/NotificationHandler/pushHelper.ts  → ../../quickfcm.config.json
+  //   without src/: NotificationHandler/pushHelper.ts      → ../quickfcm.config.json
+  const hasSrc = project.srcDir !== project.rootDir
+  const CONFIG_IMPORT_PATH = hasSrc
+    ? '../../quickfcm.config.json'
+    : '../quickfcm.config.json'
+
   const handlerDir = path.join(project.srcDir, 'NotificationHandler')
   await ensureDir(handlerDir)
 
   const helperPath = path.join(handlerDir, `pushHelper.${ext}`)
 
+  // ── Render helper template with dynamic config import path ──────────────
+  const renderedHelperContent = renderTemplate(helperContent, { CONFIG_IMPORT_PATH })
+
   // ── 3. Zero-Config Handler Files ──────────────────────────────────────
   const isTs = project.language === 'typescript'
+  const jsxExt = project.jsxExtension  // 'tsx' | 'jsx' | 'js'
 
-  // Manager: .tsx for TS, .jsx for JS
-  // Config:  .ts  for TS, .js  for JS (both read from quickfcm.config.json)
+  // Manager template: tsx for TS, jsx/js template for JS (same JSX content, different output ext)
+  // Config:  .ts for TS, .js for JS — logic files, never need JSX extension
   // Usage:   4-way pick — framework × language
   const managerTplName = isTs ? FRONTEND_MANAGER_TPL : FRONTEND_MANAGER_JSX
   const configTplName  = isTs ? FRONTEND_CONFIG_TPL  : FRONTEND_CONFIG_JS
@@ -87,16 +100,35 @@ export async function scaffoldFrontend(context: CLIContext): Promise<ScaffoldedF
   const usageTemplate   = await readFile(path.join(TEMPLATES_DIR, usageTplName))
 
   // Output extensions
-  const managerExt = isTs ? 'tsx' : 'jsx'
-  const configExt  = isTs ? 'ts'  : 'js'
+  // jsxExt drives component files (tsx | jsx | js)
+  // configExt is always plain ts/js — never needs jsx suffix
+  const configExt = isTs ? 'ts' : 'js'
 
-  const managerPath = path.join(handlerDir, `PushNotificationManager.${managerExt}`)
+  logger.info(`ℹ  Detected component extension: .${jsxExt}`)
+
+  const managerPath = path.join(handlerDir, `PushNotificationManager.${jsxExt}`)
   const configPath  = path.join(handlerDir, `config.${configExt}`)
   const usagePath   = path.join(handlerDir, 'USAGE.md')
 
   // Template vars — SW_FILENAME needed by config template for serviceWorkerPath
+  // CONFIG_IMPORT_PATH is the relative path from NotificationHandler/ to quickfcm.config.json
   const configVars: Record<string, string> = {
     SW_FILENAME: swFilename,
+    CONFIG_IMPORT_PATH,
+  }
+
+  // Display-friendly paths for the USAGE.md doc (relative to project root)
+  // HANDLER_DIR:   where NotificationHandler lives on disk (for the user to know)
+  // COMPONENTS_DIR: where PushProvider lives (Next.js only)
+  // JSX_EXT:        the component file extension detected for this project
+  const HANDLER_DIR    = hasSrc ? 'src/NotificationHandler' : 'NotificationHandler'
+  const COMPONENTS_DIR = hasSrc ? 'src/components'          : 'components'
+  const JSX_EXT        = jsxExt
+
+  const usageVars: Record<string, string> = {
+    HANDLER_DIR,
+    COMPONENTS_DIR,
+    JSX_EXT,
   }
 
   // ── Run conflict checks ───────────────────────────────────────────────
@@ -108,12 +140,12 @@ export async function scaffoldFrontend(context: CLIContext): Promise<ScaffoldedF
     },
     {
       path: helperPath,
-      content: helperContent,
+      content: renderedHelperContent,
       description: 'Frontend helper — initializes and handles tokens',
     },
     {
       path: managerPath,
-      content: managerTemplate,
+      content: renderTemplate(managerTemplate, usageVars),
       description: 'Zero-config Notification Manager component',
     },
     {
@@ -123,7 +155,7 @@ export async function scaffoldFrontend(context: CLIContext): Promise<ScaffoldedF
     },
     {
       path: usagePath,
-      content: usageTemplate,
+      content: renderTemplate(usageTemplate, usageVars),
       description: 'Quick usage guide for your NotificationHandler',
     },
   ]
@@ -147,11 +179,10 @@ export async function scaffoldFrontend(context: CLIContext): Promise<ScaffoldedF
     await ensureDir(componentsDir)
 
     const providerTplName  = isTs ? FRONTEND_PUSH_PROVIDER_TSX : FRONTEND_PUSH_PROVIDER_JSX
-    const providerExt      = isTs ? 'tsx' : 'jsx'
     const providerTemplate = await readFile(path.join(TEMPLATES_DIR, providerTplName))
     filesToWrite.push({
-      path: path.join(componentsDir, `PushProvider.${providerExt}`),
-      content: providerTemplate,
+      path: path.join(componentsDir, `PushProvider.${jsxExt}`),
+      content: renderTemplate(providerTemplate, usageVars),
       description: 'Client-side PushProvider wrapper for Next.js layout',
     })
   }

@@ -3,7 +3,7 @@
 // Values are read directly from quickfcm.config.json (no env vars needed).
 // ─────────────────────────────────────────────────────────────────────────────
 
-import pkg from '../../quickfcm.config.json'
+import pkg from '{{CONFIG_IMPORT_PATH}}'
 
 export const pushConfig = {
   apiKey:            pkg.firebase.apiKey,

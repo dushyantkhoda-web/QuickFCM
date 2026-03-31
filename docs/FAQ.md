@@ -71,22 +71,11 @@ All configuration is stored in `quickfcm.config.json` in your project root. This
 - Project metadata (language, framework, router type)
 - Version compatibility info
 
-### What are the environment variable names?
-The CLI always uses the `FCM_` naming scheme. The prefix depends on your framework:
-
-| Framework | Example key |
-|---|---|
-| Next.js | `NEXT_PUBLIC_FCM_API_KEY` |
-| React / Vite | `FCM_API_KEY` |
-
-The full set of keys is: `FCM_API_KEY`, `FCM_AUTH_DOMAIN`, `FCM_PROJECT_ID`, `FCM_STORAGE_BUCKET`, `FCM_MESSAGING_SENDER_ID`, `FCM_APP_ID`, `FCM_VAPID_KEY`.
+### How do credentials get stored?
+All credentials are stored in `quickfcm.config.json` at your project root. The generated `config.ts`/`config.js` reads directly from this file — **no `.env` file, no environment variable prefixes** (`VITE_`, `REACT_APP_`, `NEXT_PUBLIC_`) needed. `quickfcm.config.json` is automatically added to `.gitignore` so it is never committed.
 
 ### What happens if I run `init` twice?
-Safe to run multiple times. The CLI:
-- **Updates** existing FCM keys in `.env` in-place (same line, new value)
-- **Appends** only truly new keys
-- **Preserves** all other lines, comments, and unrelated variables exactly
-- **Never** writes a duplicate key
+Safe to run multiple times. The CLI detects existing files and offers conflict resolution options (overwrite, skip, view diff). Your existing `quickfcm.config.json` will be updated with the new values you enter.
 
 ### Does the CLI install firebase and quick-fcm for me?
 Yes. Before scaffolding any files, the CLI checks your `package.json`. If `firebase` or `quick-fcm` is missing, it installs both automatically using your project's package manager:
@@ -97,12 +86,13 @@ Yes. Before scaffolding any files, the CLI checks your `package.json`. If `fireb
 Install order: `quick-fcm` first, then `firebase`. If a package is already present, it is silently skipped. If an install fails, a warning is shown and setup continues — you can install manually.
 
 ### My project is JavaScript, not TypeScript. What gets generated?
-All generated files use JavaScript extensions:
-- `PushNotificationManager.jsx` instead of `.tsx`
-- `config.js` instead of `.ts`
-- `pushHelper.js` instead of `.ts`
+All generated files use JavaScript extensions. The exact extension matches your existing project convention:
+- If your project has `.jsx` files (Vite / CRA style) → generates `PushNotificationManager.jsx`, `PushProvider.jsx`, etc.
+- If your project has no `.jsx` files (Next.js default JS) → generates `PushNotificationManager.js`, `PushProvider.js`, etc.
 
-The JS files contain no TypeScript syntax — they are plain ES module files that work with any JS React/Next.js setup.
+Logic files (`config.js`, `pushHelper.js`) always use plain `.js` — they contain no JSX.
+
+The files contain no TypeScript syntax — plain ES module files that work with any JS React/Next.js setup.
 
 ### Can I change the configuration after setup?
 Yes! Simply edit `quickfcm.config.json`. The changes will be picked up immediately.

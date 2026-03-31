@@ -1,12 +1,12 @@
 # QuickFCM — Integration Guide (React · JavaScript)
 
-Your push notification files are ready inside `src/NotificationHandler/`.
+Your push notification files are ready inside `{{HANDLER_DIR}}/`.
 
 ---
 
 ### 1. Config is already wired
 
-`src/NotificationHandler/config.js` reads your Firebase credentials directly from  
+`{{HANDLER_DIR}}/config.js` reads your Firebase credentials directly from  
 `quickfcm.config.json` — **no `.env` file needed.**  
 To update credentials, edit `quickfcm.config.json`.
 
@@ -70,7 +70,7 @@ export function EnablePushButton() {
 
 ### 4. Handle foreground messages
 
-Open `src/NotificationHandler/PushNotificationManager.jsx` and connect your toast library:
+Open `{{HANDLER_DIR}}/PushNotificationManager.{{JSX_EXT}}` and connect your toast library:
 
 ```js
 // Replace the console.log with your toast library

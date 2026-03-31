@@ -96,8 +96,10 @@ export async function scaffoldFiles(context: CLIContext): Promise<ScaffoldedFile
     ])
 
   // ── Output extensions ────────────────────────────────────────────────
-  const providerExt = isTs ? 'tsx' : 'jsx'
-  const codeExt     = isTs ? 'ts'  : 'js'
+  // jsxExtension is detected from user's project (tsx | jsx | js)
+  // codeExt is always plain ts/js — non-JSX files never need the jsx suffix
+  const providerExt = project.jsxExtension  // mirrors user's component file convention
+  const codeExt     = isTs ? 'ts' : 'js'
 
   // ── Build file list ───────────────────────────────────────────────────
   const filesToWrite: Array<{ path: string; content: string; description: string }> = [
@@ -108,7 +110,7 @@ export async function scaffoldFiles(context: CLIContext): Promise<ScaffoldedFile
     },
     {
       path: path.join(pushDir, `pushProvider.${providerExt}`),
-      content: providerTemplate,
+      content: renderTemplate(providerTemplate, vars),
       description: 'React context provider with Safari support',
     },
     {
