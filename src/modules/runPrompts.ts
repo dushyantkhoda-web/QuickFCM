@@ -165,10 +165,12 @@ export async function runPrompts(project: ProjectInfo, options: { backendOnly?: 
     logger.raw("  import { getPushToken } from 'quick-fcm'")
     logger.raw('  const token = await getPushToken(pushConfig)')
     logger.raw("  console.log('FCM Token:', token)")
-    logger.raw('──────────────────────────────────────────────')
     logger.blank()
     logger.raw('  For full integration details, see:')
     logger.raw('      src/NotificationHandler/USAGE.md')
+    logger.blank()
+    logger.blank()
+    logger.raw('──────────────────────────────────────────────')
     logger.blank()
   }
 
