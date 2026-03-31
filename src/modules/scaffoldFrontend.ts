@@ -15,6 +15,8 @@ import {
   FRONTEND_MANAGER_JSX,
   FRONTEND_CONFIG_TPL,
   FRONTEND_CONFIG_JS,
+  FRONTEND_PUSH_PROVIDER_TSX,
+  FRONTEND_PUSH_PROVIDER_JSX,
   FRONTEND_USAGE_TPL,
 } from '../constants'
 
@@ -118,6 +120,34 @@ export async function scaffoldFrontend(context: CLIContext): Promise<ScaffoldedF
       description: 'Quick usage guide for your NotificationHandler',
     },
   ]
+
+  // ── Next.js only: scaffold PushProvider into components/ ────────────────
+  if (project.isNextJs) {
+    // Prefer srcDir/components, fall back to rootDir/components; create if missing
+    const componentsDirCandidates = [
+      path.join(project.srcDir, 'components'),
+      path.join(project.rootDir, 'components'),
+    ]
+    let componentsDir = componentsDirCandidates[0] // default: srcDir/components
+    for (const candidate of componentsDirCandidates) {
+      if (await fileExists(candidate)) {
+        componentsDir = candidate
+        break
+      }
+    }
+
+    // ensureDir creates it if it doesn't exist
+    await ensureDir(componentsDir)
+
+    const providerTplName  = isTs ? FRONTEND_PUSH_PROVIDER_TSX : FRONTEND_PUSH_PROVIDER_JSX
+    const providerExt      = isTs ? 'tsx' : 'jsx'
+    const providerTemplate = await readFile(path.join(TEMPLATES_DIR, providerTplName))
+    filesToWrite.push({
+      path: path.join(componentsDir, `PushProvider.${providerExt}`),
+      content: providerTemplate,
+      description: 'Client-side PushProvider wrapper for Next.js layout',
+    })
+  }
 
   const resolved = await checkConflicts(filesToWrite, project)
 

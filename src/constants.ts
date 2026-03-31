@@ -24,6 +24,8 @@ export const FRONTEND_MANAGER_TPL = 'frontend/PushNotificationManager.tsx.tpl'
 export const FRONTEND_MANAGER_JSX = 'frontend/PushNotificationManager.jsx.tpl'
 export const FRONTEND_CONFIG_TPL = 'frontend/pushConfig.ts.tpl'
 export const FRONTEND_CONFIG_JS  = 'frontend/pushConfig.js.tpl'
+export const FRONTEND_PUSH_PROVIDER_TSX = 'frontend/PushProvider.tsx.tpl'
+export const FRONTEND_PUSH_PROVIDER_JSX = 'frontend/PushProvider.jsx.tpl'
 export const FRONTEND_USAGE_TPL = 'frontend/USAGE.md.tpl'
 
 export const EXPRESS_HELPER_TS = 'backend/express/pushHelper.ts.tpl'
