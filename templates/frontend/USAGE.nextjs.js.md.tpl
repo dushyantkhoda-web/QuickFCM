@@ -1,4 +1,4 @@
-# QuickFCM — Integration Guide (React · TypeScript)
+# QuickFCM — Integration Guide (Next.js · JavaScript)
 
 Your push notification files are ready inside `src/NotificationHandler/`.
 
@@ -6,45 +6,34 @@ Your push notification files are ready inside `src/NotificationHandler/`.
 
 ### 1. Config is already wired
 
-`src/NotificationHandler/config.ts` reads your Firebase credentials directly from  
+`src/NotificationHandler/config.js` reads your Firebase credentials directly from  
 `quickfcm.config.json` — **no `.env` file needed.**  
 To update credentials, edit `quickfcm.config.json`.
 
 ---
 
-### 2. Wrap your App root with `<CustomPushProvider>`
+### 2. Wrap your root layout with `<PushProvider>`
 
-```tsx
-// src/main.tsx or src/index.tsx
-import { CustomPushProvider } from 'quick-fcm';
-import { pushConfig } from './NotificationHandler/config';
-import { PushNotificationManager } from './NotificationHandler/PushNotificationManager';
+The CLI generated `components/PushProvider.jsx` for you. Add it to your root layout:
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <CustomPushProvider config={pushConfig}>
-    <PushNotificationManager />
-    <App />
-  </CustomPushProvider>
-);
-```
+```jsx
+// app/layout.jsx
+import { PushProvider } from '@/components/PushProvider';
 
-Or wrap inside `App.tsx`:
-
-```tsx
-// src/App.tsx
-import { CustomPushProvider } from 'quick-fcm';
-import { pushConfig } from './NotificationHandler/config';
-import { PushNotificationManager } from './NotificationHandler/PushNotificationManager';
-
-function App() {
+export default function RootLayout({ children }) {
   return (
-    <CustomPushProvider config={pushConfig}>
-      <PushNotificationManager />
-      {/* rest of your app */}
-    </CustomPushProvider>
+    <html lang="en">
+      <body>
+        <PushProvider>
+          {children}
+        </PushProvider>
+      </body>
+    </html>
   );
 }
 ```
+
+`PushProvider` is a `'use client'` wrapper — your `layout.jsx` stays a Server Component.
 
 ---
 
@@ -52,7 +41,8 @@ function App() {
 
 Permissions must be triggered by a user gesture:
 
-```tsx
+```jsx
+'use client';
 import { usePushMessage } from 'quick-fcm';
 
 export function EnablePushButton() {
@@ -70,9 +60,9 @@ export function EnablePushButton() {
 
 ### 4. Handle foreground messages
 
-Open `src/NotificationHandler/PushNotificationManager.tsx` and connect your toast library:
+Open `src/NotificationHandler/PushNotificationManager.jsx` and connect your toast library:
 
-```ts
+```js
 // Replace the console.log with your toast library
 useEffect(() => {
   if (messages.length > 0) {
@@ -86,9 +76,9 @@ useEffect(() => {
 
 ### 5. Get the raw FCM token
 
-```ts
+```js
 import { getPushToken } from 'quick-fcm';
-import { pushConfig } from './NotificationHandler/config';
+import { pushConfig } from '@/NotificationHandler/config';
 
 const token = await getPushToken(pushConfig);
 console.log('FCM Token:', token);

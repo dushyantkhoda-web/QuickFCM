@@ -1,4 +1,4 @@
-# QuickFCM — Integration Guide (Next.js)
+# QuickFCM — Integration Guide (Next.js · TypeScript)
 
 Your push notification files are ready inside `src/NotificationHandler/`.
 
@@ -6,7 +6,7 @@ Your push notification files are ready inside `src/NotificationHandler/`.
 
 ### 1. Config is already wired
 
-`src/NotificationHandler/config.ts` (or `.js`) reads your Firebase credentials directly from  
+`src/NotificationHandler/config.ts` reads your Firebase credentials directly from  
 `quickfcm.config.json` — **no `.env` file needed.**  
 To update credentials, edit `quickfcm.config.json`.
 
@@ -14,8 +14,7 @@ To update credentials, edit `quickfcm.config.json`.
 
 ### 2. Wrap your root layout with `<PushProvider>`
 
-The CLI generated `components/PushProvider.tsx` (or `.jsx`) for you.  
-Add it to your root layout:
+The CLI generated `components/PushProvider.tsx` for you. Add it to your root layout:
 
 ```tsx
 // app/layout.tsx
@@ -63,7 +62,7 @@ export function EnablePushButton() {
 
 Open `src/NotificationHandler/PushNotificationManager.tsx` and connect your toast library:
 
-```tsx
+```ts
 // Replace the console.log with your toast library
 useEffect(() => {
   if (messages.length > 0) {
@@ -77,7 +76,7 @@ useEffect(() => {
 
 ### 5. Get the raw FCM token
 
-```tsx
+```ts
 import { getPushToken } from 'quick-fcm';
 import { pushConfig } from '@/NotificationHandler/config';
 
