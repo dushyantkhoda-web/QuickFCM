@@ -12,47 +12,76 @@
 
 ## Zero-Config Integration (Recommended)
 
-The CLI automatically scaffolds a `src/NotificationHandler/` directory designed for almost zero-effort integration.
+The CLI automatically scaffolds a `src/NotificationHandler/` directory and (for Next.js) a `components/PushProvider` wrapper — almost zero-effort integration.
 
-### 1. Minimal App Wrap (TypeScript)
+Firebase credentials are stored in `quickfcm.config.json` and read directly by the generated `config.ts`/`config.js` — **no `.env` file, no prefix changes** (`VITE_`, `REACT_APP_`, `NEXT_PUBLIC_`).
+
+---
+
+### Next.js — Use the generated `PushProvider`
+
+The CLI generates `components/PushProvider.tsx` (or `.jsx`). Drop it into your root layout:
 
 ```tsx
-// app/layout.tsx (Next.js) or src/App.tsx (React)
+// app/layout.tsx
+import { PushProvider } from '@/components/PushProvider'; // generated
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <body>
+        <PushProvider>
+          {children}
+        </PushProvider>
+      </body>
+    </html>
+  );
+}
+```
+
+`PushProvider` is a `'use client'` wrapper — `layout.tsx` stays a Server Component.
+
+---
+
+### React — Wrap `App` with `CustomPushProvider`
+
+```tsx
+// src/main.tsx or src/App.tsx
 import { CustomPushProvider } from 'quick-fcm';
-import { pushConfig } from './NotificationHandler/config';                         // generated
+import { pushConfig } from './NotificationHandler/config';         // generated
 import { PushNotificationManager } from './NotificationHandler/PushNotificationManager'; // generated
 
-export default function RootLayout({ children }) {
+function App() {
   return (
     <CustomPushProvider config={pushConfig}>
       {/* Global handler: tokens, foreground notifications, permission monitoring */}
       <PushNotificationManager />
-      {children}
+      <YourApp />
     </CustomPushProvider>
   );
 }
 ```
 
-### 1b. Minimal App Wrap (JavaScript)
-
 ```jsx
-// src/App.jsx (React JS project)
+// JavaScript (React JS project — src/App.jsx)
 import { CustomPushProvider } from 'quick-fcm';
-import { pushConfig } from './NotificationHandler/config';                          // generated
-import { PushNotificationManager } from './NotificationHandler/PushNotificationManager'; // generated
+import { pushConfig } from './NotificationHandler/config';
+import { PushNotificationManager } from './NotificationHandler/PushNotificationManager';
 
-export default function App({ children }) {
+export default function App() {
   return (
     <CustomPushProvider config={pushConfig}>
       <PushNotificationManager />
-      {children}
+      <YourApp />
     </CustomPushProvider>
   );
 }
 ```
 
-### 2. Customizing Notification UX
-Open `PushNotificationManager.tsx` (or `.jsx` for JS projects) to plug in your favourite toast library:
+---
+
+### Customizing Notification UX
+Open `PushNotificationManager.tsx` (or `.jsx`) to plug in your favourite toast library:
 
 ```tsx
 // PushNotificationManager snippet
@@ -66,8 +95,8 @@ useEffect(() => {
 }, [messages]);
 ```
 
-### 3. Permission Button
-See the `USAGE.md` in your scaffolded `NotificationHandler/` folder for a professional toggle button example.
+### Permission Button
+See `src/NotificationHandler/USAGE.md` (generated) for a professional toggle button example.
 
 ---
 

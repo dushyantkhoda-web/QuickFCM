@@ -1,4 +1,4 @@
-# QuickFCM — Integration Guide (React)
+# QuickFCM — Integration Guide (Next.js)
 
 Your push notification files are ready inside `src/NotificationHandler/`.
 
@@ -12,39 +12,29 @@ To update credentials, edit `quickfcm.config.json`.
 
 ---
 
-### 2. Wrap your App root with `<CustomPushProvider>`
+### 2. Wrap your root layout with `<PushProvider>`
+
+The CLI generated `components/PushProvider.tsx` (or `.jsx`) for you.  
+Add it to your root layout:
 
 ```tsx
-// src/main.tsx or src/index.tsx
-import { CustomPushProvider } from 'quick-fcm';
-import { pushConfig } from './NotificationHandler/config';
-import { PushNotificationManager } from './NotificationHandler/PushNotificationManager';
+// app/layout.tsx
+import { PushProvider } from '@/components/PushProvider';
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <CustomPushProvider config={pushConfig}>
-    <PushNotificationManager />
-    <App />
-  </CustomPushProvider>
-);
-```
-
-Or wrap inside `App.tsx`:
-
-```tsx
-// src/App.tsx
-import { CustomPushProvider } from 'quick-fcm';
-import { pushConfig } from './NotificationHandler/config';
-import { PushNotificationManager } from './NotificationHandler/PushNotificationManager';
-
-function App() {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <CustomPushProvider config={pushConfig}>
-      <PushNotificationManager />
-      {/* rest of your app */}
-    </CustomPushProvider>
+    <html lang="en">
+      <body>
+        <PushProvider>
+          {children}
+        </PushProvider>
+      </body>
+    </html>
   );
 }
 ```
+
+`PushProvider` is a `'use client'` wrapper — your `layout.tsx` stays a Server Component.
 
 ---
 
@@ -53,6 +43,7 @@ function App() {
 Permissions must be triggered by a user gesture:
 
 ```tsx
+'use client';
 import { usePushMessage } from 'quick-fcm';
 
 export function EnablePushButton() {
@@ -88,7 +79,7 @@ useEffect(() => {
 
 ```tsx
 import { getPushToken } from 'quick-fcm';
-import { pushConfig } from './NotificationHandler/config';
+import { pushConfig } from '@/NotificationHandler/config';
 
 const token = await getPushToken(pushConfig);
 console.log('FCM Token:', token);

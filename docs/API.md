@@ -32,10 +32,10 @@ npx quick-fcm init [options]
 1. **Framework Detection** — Reads `package.json`; detects React vs Next.js (App Router / Pages Router). Exits immediately if neither is present (unless `--backend-only`)
 2. **Version Validation** — Checks Firebase/React compatibility
 3. **Interactive Prompts** — Asks for Firebase config (apiKey, authDomain, projectId, storageBucket, messagingSenderId, appId, vapidKey)
-4. **Write `.env`** — Writes 7 `FCM_*` keys with the correct prefix (`NEXT_PUBLIC_` for Next.js, none for React). Merges in-place — no duplicates ever written
-5. **Auto-install Dependencies** — Checks for `firebase` and `quick-fcm` in target project; installs missing ones using the project's own package manager (pnpm / yarn / npm)
-6. **Generate Config** — Creates `quickfcm.config.json` as the single source of truth
-7. **Scaffold Files** — Creates service worker, NotificationHandler files (`.ts`/`.tsx` for TypeScript projects, `.js`/`.jsx` for JavaScript projects)
+4. **Auto-install Dependencies** — Checks for `firebase` and `quick-fcm` in target project; installs missing ones using the project's own package manager (pnpm / yarn / npm)
+5. **Generate Config** — Creates `quickfcm.config.json` as the single source of truth for all Firebase credentials. File is added to `.gitignore` automatically
+6. **Scaffold Files** — Creates service worker, NotificationHandler files (`.ts`/`.tsx` for TypeScript, `.js`/`.jsx` for JavaScript). Generated `config.ts`/`config.js` reads directly from `quickfcm.config.json` — no `.env` needed
+7. **Next.js only** — Generates `components/PushProvider.tsx` (or `.jsx`). Creates `components/` if it doesn't exist
 8. **Backend Setup** — Scaffolds backend helpers if Express / NestJS detected
 
 #### Exit Codes

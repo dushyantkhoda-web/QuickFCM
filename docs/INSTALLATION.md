@@ -142,33 +142,17 @@ If you already have either package installed, it is silently skipped. If an inst
 
 ---
 
-## Environment Variables
+## Config Storage
 
-The CLI writes your Firebase config to `.env` automatically during init. Keys follow this naming scheme based on your detected framework:
+Firebase credentials and project settings are stored in `quickfcm.config.json` at your project root — **no `.env` file is needed.** The CLI adds `quickfcm.config.json` to your `.gitignore` automatically.
 
-### Next.js projects
-```env
-NEXT_PUBLIC_FCM_API_KEY=your-api-key
-NEXT_PUBLIC_FCM_AUTH_DOMAIN=your-project.firebaseapp.com
-NEXT_PUBLIC_FCM_PROJECT_ID=your-project-id
-NEXT_PUBLIC_FCM_STORAGE_BUCKET=your-project.appspot.com
-NEXT_PUBLIC_FCM_MESSAGING_SENDER_ID=123456789
-NEXT_PUBLIC_FCM_APP_ID=1:123:web:abc
-NEXT_PUBLIC_FCM_VAPID_KEY=your-vapid-key
+The generated `config.ts`/`config.js` imports directly from this file:
+```typescript
+import pkg from '../../quickfcm.config.json';
+export const pushConfig = { apiKey: pkg.firebase.apiKey, ... };
 ```
 
-### React projects (including Vite)
-```env
-FCM_API_KEY=your-api-key
-FCM_AUTH_DOMAIN=your-project.firebaseapp.com
-FCM_PROJECT_ID=your-project-id
-FCM_STORAGE_BUCKET=your-project.appspot.com
-FCM_MESSAGING_SENDER_ID=123456789
-FCM_APP_ID=1:123:web:abc
-FCM_VAPID_KEY=your-vapid-key
-```
-
-> **Re-running `init`** merges values in-place — existing keys are updated on the same line, new keys are appended. No duplicate keys are ever written. All other lines (comments, unrelated keys) are preserved exactly.
+To update a credential, edit `quickfcm.config.json` directly.
 
 ---
 
@@ -179,27 +163,31 @@ After a successful `init`, these files are created:
 ### TypeScript project
 ```
 public/
-  firebase-messaging-sw.js        ← Service worker (background push)
+  firebase-messaging-sw.js          ← Service worker (background push)
+components/
+  PushProvider.tsx                  ← 'use client' layout wrapper (Next.js only)
 src/
   NotificationHandler/
-    PushNotificationManager.tsx   ← Foreground toast handler
-    config.ts                     ← Firebase config (reads from .env)
-    pushHelper.ts                 ← usePushNotification hook
-    USAGE.md                      ← Integration guide
-quickfcm.config.json                      ← CLI configuration
+    PushNotificationManager.tsx     ← Foreground toast handler
+    config.ts                       ← Firebase config (reads from quickfcm.config.json)
+    pushHelper.ts                   ← usePushNotification hook
+    USAGE.md                        ← Integration guide
+quickfcm.config.json                ← CLI configuration (auto-added to .gitignore)
 ```
 
 ### JavaScript project
 ```
 public/
-  firebase-messaging-sw.js        ← Service worker (background push)
+  firebase-messaging-sw.js          ← Service worker (background push)
+components/
+  PushProvider.jsx                  ← 'use client' layout wrapper (Next.js only)
 src/
   NotificationHandler/
-    PushNotificationManager.jsx   ← Foreground toast handler
-    config.js                     ← Firebase config (reads from .env)
-    pushHelper.js                 ← usePushNotification hook
-    USAGE.md                      ← Integration guide
-quickfcm.config.json                      ← CLI configuration
+    PushNotificationManager.jsx     ← Foreground toast handler
+    config.js                       ← Firebase config (reads from quickfcm.config.json)
+    pushHelper.js                   ← usePushNotification hook
+    USAGE.md                        ← Integration guide
+quickfcm.config.json                ← CLI configuration (auto-added to .gitignore)
 ```
 
 ---

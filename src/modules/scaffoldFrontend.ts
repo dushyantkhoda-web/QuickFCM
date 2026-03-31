@@ -18,6 +18,7 @@ import {
   FRONTEND_PUSH_PROVIDER_TSX,
   FRONTEND_PUSH_PROVIDER_JSX,
   FRONTEND_USAGE_TPL,
+  FRONTEND_USAGE_NEXTJS_TPL,
 } from '../constants'
 
 export async function scaffoldFrontend(context: CLIContext): Promise<ScaffoldedFile[]> {
@@ -72,12 +73,14 @@ export async function scaffoldFrontend(context: CLIContext): Promise<ScaffoldedF
 
   // Manager: .tsx for TS, .jsx for JS
   // Config:  .ts  for TS, .js  for JS (both read from quickfcm.config.json)
+  // Usage:   Next.js gets PushProvider instructions, React gets CustomPushProvider instructions
   const managerTplName = isTs ? FRONTEND_MANAGER_TPL : FRONTEND_MANAGER_JSX
   const configTplName  = isTs ? FRONTEND_CONFIG_TPL  : FRONTEND_CONFIG_JS
+  const usageTplName   = project.isNextJs ? FRONTEND_USAGE_NEXTJS_TPL : FRONTEND_USAGE_TPL
 
   const managerTemplate = await readFile(path.join(TEMPLATES_DIR, managerTplName))
   const configTemplate  = await readFile(path.join(TEMPLATES_DIR, configTplName))
-  const usageTemplate   = await readFile(path.join(TEMPLATES_DIR, FRONTEND_USAGE_TPL))
+  const usageTemplate   = await readFile(path.join(TEMPLATES_DIR, usageTplName))
 
   // Output extensions
   const managerExt = isTs ? 'tsx' : 'jsx'
