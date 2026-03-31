@@ -94,20 +94,7 @@ export async function printSummary(context: CLIContext): Promise<void> {
 
   } else {
     // Library mode — quick-fcm is already installed by installDeps
-    logger.raw(`  [1] Open the integration guide generated for your project:`)
-    logger.raw(`      src/NotificationHandler/USAGE.md`)
-    logger.blank()
 
-    logger.raw(`  [2] Wrap your app root (src/App.tsx or layout.tsx):`)
-    logger.raw(`      import { CustomPushProvider } from 'quick-fcm'`)
-    logger.raw(`      import { pushConfig } from './NotificationHandler/config'`)
-    logger.blank()
-    logger.raw(`      <CustomPushProvider config={pushConfig}>`)
-    logger.raw(`        <YourApp />`)
-    logger.raw(`      </CustomPushProvider>`)
-    logger.blank()
-
-    logger.raw(`  [3] See USAGE.md for the permission button and full usage examples.`)
     logger.blank()
   }
 

@@ -136,13 +136,13 @@ export async function runPrompts(project: ProjectInfo, options: { backendOnly?: 
 
   // ── FCM key definitions (bare names — prefix applied at write time) ───
   const fcmKeys: Array<{ bare: string; value: string }> = [
-    { bare: 'FCM_API_KEY',            value: firebase.apiKey },
-    { bare: 'FCM_AUTH_DOMAIN',        value: firebase.authDomain },
-    { bare: 'FCM_PROJECT_ID',         value: firebase.projectId },
-    { bare: 'FCM_STORAGE_BUCKET',     value: firebase.storageBucket },
-    { bare: 'FCM_MESSAGING_SENDER_ID',value: firebase.messagingSenderId },
-    { bare: 'FCM_APP_ID',             value: firebase.appId },
-    { bare: 'FCM_VAPID_KEY',          value: firebase.vapidKey },
+    { bare: 'FCM_API_KEY', value: firebase.apiKey },
+    { bare: 'FCM_AUTH_DOMAIN', value: firebase.authDomain },
+    { bare: 'FCM_PROJECT_ID', value: firebase.projectId },
+    { bare: 'FCM_STORAGE_BUCKET', value: firebase.storageBucket },
+    { bare: 'FCM_MESSAGING_SENDER_ID', value: firebase.messagingSenderId },
+    { bare: 'FCM_APP_ID', value: firebase.appId },
+    { bare: 'FCM_VAPID_KEY', value: firebase.vapidKey },
   ]
 
   // ── Environment Variables — Only for frontend-enabled setups ─────────
@@ -294,6 +294,11 @@ export async function runPrompts(project: ProjectInfo, options: { backendOnly?: 
     logger.raw("  console.log('FCM Token:', token)")
     logger.raw('──────────────────────────────────────────────')
     logger.blank()
+
+    logger.raw(`  For more information please review integration guide generated for your project:`);
+    logger.raw(`      src/NotificationHandler/USAGE.md`);
+    logger.blank();
+
   }
 
   return {
