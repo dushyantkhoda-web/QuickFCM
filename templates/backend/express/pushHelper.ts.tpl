@@ -22,11 +22,11 @@
 
 import * as admin from 'firebase-admin';
 import * as path from 'path';
-const ourPkg = require('../quickfcm.config.json');
+const QuickFCMConfig = require('../quickfcm.config.json');
 
 // Initialize Firebase Admin SDK
 if (!admin.apps.length) {
-  const credentialsPath = path.resolve(ourPkg.backend.credentialsPath ?? './credentials.json');
+  const credentialsPath = path.resolve(QuickFCMConfig.backend.credentialsPath ?? './credentials.json');
   try {
     admin.initializeApp({
       credential: admin.credential.cert(credentialsPath),
