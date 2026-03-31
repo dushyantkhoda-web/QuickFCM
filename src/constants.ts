@@ -10,7 +10,7 @@ export const FIREBASE_VERSION_RANGE = '>=10.0.0 <13.0.0'
 export const REACT_VERSION_RANGE = '>=17.0.0'
 
 // ── Output file names ───────────────────────────────────────────────────────
-export const CONFIG_FILENAME = 'our_pkg.json'
+export const CONFIG_FILENAME = 'quickfcm.config.json'
 export const CREDENTIALS_FILENAME = 'credentials.json'
 export const SERVICE_WORKER_FILENAME = 'firebase-messaging-sw.js'
 export const SERVICE_WORKER_FALLBACK_FILENAME = 'firebase-messaging-sw-tas.js'

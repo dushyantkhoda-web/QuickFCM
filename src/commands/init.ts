@@ -105,9 +105,9 @@ export async function init(options: {
     credSpin.succeed('Firebase credentials processed')
   }
 
-  // ── Step 5: Write our_pkg.json ────────────────────────────────────────
+  // ── Step 5: Write quickfcm.config.json ────────────────────────────────────────
   showStep(5, 'Creating configuration file...')
-  const configSpin = createSpinner('Generating our_pkg.json...', 'star')
+  const configSpin = createSpinner('Generating quickfcm.config.json...', 'star')
   configSpin.start()
   await generateConfig(context)
   configSpin.succeed('Configuration file created')

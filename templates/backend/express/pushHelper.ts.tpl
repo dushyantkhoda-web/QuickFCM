@@ -22,7 +22,7 @@
 
 import * as admin from 'firebase-admin';
 import * as path from 'path';
-const ourPkg = require('../our_pkg.json');
+const ourPkg = require('../quickfcm.config.json');
 
 // Initialize Firebase Admin SDK
 if (!admin.apps.length) {

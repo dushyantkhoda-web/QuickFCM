@@ -22,8 +22,8 @@ export async function generateServiceWorker(): Promise<void> {
   const cwd = process.cwd()
   let firebaseConfig: ServiceWorkerConfig
 
-  // ── 1. Try to load config from our_pkg.json ───────────────────────────
-  const pkgConfigPath = path.join(cwd, 'our_pkg.json')
+  // ── 1. Try to load config from quickfcm.config.json ───────────────────────────
+  const pkgConfigPath = path.join(cwd, 'quickfcm.config.json')
   if (await fileExists(pkgConfigPath)) {
     try {
       const packageConfig = await readJson<OurPackageJson>(pkgConfigPath)
@@ -32,7 +32,7 @@ export async function generateServiceWorker(): Promise<void> {
         packageConfig.firebase.apiKey &&
         packageConfig.firebase.projectId
       ) {
-        logger.success('✓  Found Firebase configuration in our_pkg.json')
+        logger.success('✓  Found Firebase configuration in quickfcm.config.json')
         logger.info(`   Project ID: ${packageConfig.firebase.projectId}`)
         logger.info(`   Auth Domain: ${packageConfig.firebase.authDomain}`)
         logger.blank()
@@ -45,17 +45,17 @@ export async function generateServiceWorker(): Promise<void> {
           appId: packageConfig.firebase.appId,
         }
       } else {
-        logger.warn('⚠  our_pkg.json found but Firebase config is incomplete.')
+        logger.warn('⚠  quickfcm.config.json found but Firebase config is incomplete.')
         logger.info('   Falling back to manual input.')
         firebaseConfig = await getFirebaseConfigManually()
       }
     } catch (err: any) {
-      logger.warn(`⚠  Could not parse our_pkg.json: ${err.message}`)
+      logger.warn(`⚠  Could not parse quickfcm.config.json: ${err.message}`)
       logger.info('   Falling back to manual input.')
       firebaseConfig = await getFirebaseConfigManually()
     }
   } else {
-    logger.info('ℹ  No our_pkg.json found. Manual Firebase configuration required.')
+    logger.info('ℹ  No quickfcm.config.json found. Manual Firebase configuration required.')
     logger.blank()
     firebaseConfig = await getFirebaseConfigManually()
   }

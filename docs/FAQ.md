@@ -65,7 +65,7 @@ All generated client components include `'use client'`. For App Router projects,
 ## Configuration
 
 ### Where is the configuration stored?
-All configuration is stored in `our_pkg.json` in your project root. This file contains:
+All configuration is stored in `quickfcm.config.json` in your project root. This file contains:
 - Firebase configuration
 - Backend endpoints
 - Project metadata (language, framework, router type)
@@ -105,16 +105,16 @@ All generated files use JavaScript extensions:
 The JS files contain no TypeScript syntax — they are plain ES module files that work with any JS React/Next.js setup.
 
 ### Can I change the configuration after setup?
-Yes! Simply edit `our_pkg.json`. The changes will be picked up immediately.
+Yes! Simply edit `quickfcm.config.json`. The changes will be picked up immediately.
 
 ### What if I lose my Firebase credentials?
 You can regenerate them:
 1. Go to Firebase Console → Project Settings → Service Accounts
 2. Generate new private key
-3. Update the `credentials.json` file path in `our_pkg.json`
+3. Update the `credentials.json` file path in `quickfcm.config.json`
 
 ### How do I update Firebase configuration?
-Edit `our_pkg.json`:
+Edit `quickfcm.config.json`:
 ```json
 {
   "firebase": {
@@ -371,4 +371,4 @@ Remember to include:
 - Your environment (Node version, browser, OS)
 - Error messages
 - Steps to reproduce
-- Your `our_pkg.json` (remove sensitive data)
+- Your `quickfcm.config.json` (remove sensitive data)

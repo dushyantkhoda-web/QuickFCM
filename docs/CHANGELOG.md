@@ -30,7 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -  Backend scaffolding for Express and NestJS
 -  Complete frontend integration with service worker
 - Full TypeScript support with generated interfaces
-- Configuration management via `our_pkg.json`
+- Configuration management via `quickfcm.config.json`
 - Firebase Cloud Messaging integration
 - VAPID key setup and management
 - Colored terminal output with progress indicators
@@ -56,7 +56,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Firebase service worker (`firebase-messaging-sw.js`)
   - Frontend helper (`pushHelper.{ts|js}`)
   - Backend helpers for Express/NestJS
-  - Configuration file (`our_pkg.json`)
+  - Configuration file (`quickfcm.config.json`)
   - TypeScript interfaces and types
 
 - **Conflict Management**

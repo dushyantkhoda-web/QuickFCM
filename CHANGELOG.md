@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Interactive prompts for Firebase web config, VAPID key, backend URLs, and credentials path
 - Semver-based version compatibility validation (Firebase ≥10 <13, React ≥17)
 - Conflict detection with overwrite / skip / view / diff options
-- `our_pkg.json` config generation — single source of truth
+- `quickfcm.config.json` config generation — single source of truth
 - Service worker scaffolding (`firebase-messaging-sw.js`)
 - Frontend helper scaffolding (`usePush()` hook)
 - Express backend scaffolding (push helper + routes)

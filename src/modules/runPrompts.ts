@@ -104,7 +104,7 @@ export async function runPrompts(project: ProjectInfo, options: { backendOnly?: 
       logger.info(`  3. Download the JSON file and paste its path below.`)
       logger.info(`  Direct link: ${FIREBASE_SERVICE_ACCOUNT_URL}`)
       logger.blank()
-      logger.info('  Press Enter to skip and add it manually to our_pkg.json later.')
+      logger.info('  Press Enter to skip and add it manually to quickfcm.config.json later.')
       const credInput = await input({
         message: 'Path to your Firebase credentials.json:',
         default: './credentials.json',

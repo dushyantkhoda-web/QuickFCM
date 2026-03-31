@@ -397,7 +397,7 @@ If you're still stuck:
 
 3. **File an issue**:
    - Include error messages
-   - Share your our_pkg.json (remove sensitive data)
+   - Share your quickfcm.config.json (remove sensitive data)
    - Describe your environment (Node version, browser, etc.)
 
 4. **Community resources**:

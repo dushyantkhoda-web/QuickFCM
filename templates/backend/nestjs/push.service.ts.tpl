@@ -1,7 +1,7 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import * as admin from 'firebase-admin';
 import * as path from 'path';
-const ourPkg = require('../our_pkg.json');
+const ourPkg = require('../quickfcm.config.json');
 
 /**
  * ──────────────────────────────────────────────────────────────────────────

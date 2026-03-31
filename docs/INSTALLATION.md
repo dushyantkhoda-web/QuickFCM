@@ -186,7 +186,7 @@ src/
     config.ts                     ← Firebase config (reads from .env)
     pushHelper.ts                 ← usePushNotification hook
     USAGE.md                      ← Integration guide
-our_pkg.json                      ← CLI configuration
+quickfcm.config.json                      ← CLI configuration
 ```
 
 ### JavaScript project
@@ -199,7 +199,7 @@ src/
     config.js                     ← Firebase config (reads from .env)
     pushHelper.js                 ← usePushNotification hook
     USAGE.md                      ← Integration guide
-our_pkg.json                      ← CLI configuration
+quickfcm.config.json                      ← CLI configuration
 ```
 
 ---
@@ -217,7 +217,7 @@ npx quick-fcm init       # Starts interactive setup
 ```bash
 ls public/firebase-messaging-sw.js          # Service worker
 ls src/NotificationHandler/config.ts         # TS config (or config.js for JS)
-ls our_pkg.json                              # CLI configuration
+ls quickfcm.config.json                              # CLI configuration
 ```
 
 ---

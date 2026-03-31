@@ -59,7 +59,7 @@ export async function scaffoldBackend(context: CLIContext): Promise<ScaffoldedFi
       }
     } catch (configErr: any) {
       logger.warn(`⚠  Could not generate notification-config.json: ${configErr.message}`)
-      logger.info('   You can create it manually later. See our_pkg.json for reference values.')
+      logger.info('   You can create it manually later. See quickfcm.config.json for reference values.')
     }
   }
 
@@ -101,10 +101,10 @@ async function scaffoldExpress(context: CLIContext): Promise<ScaffoldedFile[]> {
   const routesTemplate = ext === 'ts' ? EXPRESS_ROUTES_TS : EXPRESS_ROUTES_JS
 
   const helperContent = await readFile(path.join(TEMPLATES_DIR, helperTemplate))
-  
+
   const dirName = backendOnly ? 'helper' : 'push'
   const helperBaseName = backendOnly ? 'FCMHelper' : 'pushHelper'
-  
+
   let helperPath = path.join(project.srcDir, dirName, `${helperBaseName}.${ext}`)
 
   // ── Custom conflict resolution for FCMHelper (Date-based naming) ──────
@@ -112,7 +112,7 @@ async function scaffoldExpress(context: CLIContext): Promise<ScaffoldedFile[]> {
     const now = new Date()
     const dateSuffix = `${String(now.getDate()).padStart(2, '0')}-${String(now.getMonth() + 1).padStart(2, '0')}`
     const fallbackPath = path.join(project.srcDir, dirName, `${helperBaseName}-${dateSuffix}.${ext}`)
-    
+
     logger.blank()
     logger.warn(`  Conflict: ${path.relative(project.rootDir, helperPath)} already exists.`)
     const strategy = await select({
@@ -158,7 +158,7 @@ async function scaffoldExpress(context: CLIContext): Promise<ScaffoldedFile[]> {
 
   // For backend-only, we might have already handled conflicts via strategy
   // For standard mode, we use checkConflicts
-  const resolved = backendOnly 
+  const resolved = backendOnly
     ? filesToWrite.map(f => ({ ...f, action: 'write' as const }))
     : await checkConflicts(filesToWrite, project)
 
@@ -209,7 +209,7 @@ async function scaffoldNestJS(context: CLIContext): Promise<ScaffoldedFile[]> {
     const now = new Date()
     const dateSuffix = `${String(now.getDate()).padStart(2, '0')}-${String(now.getMonth() + 1).padStart(2, '0')}`
     const fallbackPath = path.join(project.srcDir, dirName, `${serviceBaseName}-${dateSuffix}.ts`)
-    
+
     logger.blank()
     logger.warn(`  Conflict: ${path.relative(project.rootDir, servicePath)} already exists.`)
     const strategy = await select({
@@ -224,7 +224,7 @@ async function scaffoldNestJS(context: CLIContext): Promise<ScaffoldedFile[]> {
     if (strategy === 'rename') {
       servicePath = fallbackPath
     } else if (strategy === 'skip') {
-       scaffolded.push({
+      scaffolded.push({
         absolutePath: servicePath,
         relativePath: path.relative(project.rootDir, servicePath),
         status: 'skipped',

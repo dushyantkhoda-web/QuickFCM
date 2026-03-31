@@ -115,7 +115,7 @@ export async function printSummary(context: CLIContext): Promise<void> {
     logger.blank()
   }
 
-  logger.raw(`  All config lives in our_pkg.json — edit anytime.`)
+  logger.raw(`  All config lives in quickfcm.config.json — edit anytime.`)
   logger.divider()
   logger.blank()
 }

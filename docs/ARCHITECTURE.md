@@ -12,7 +12,7 @@ The quick-fcm CLI has evolved to focus on backend scaffolding while the frontend
 **Default Behavior**:
 - Detects backend framework (Express/NestJS)
 - Generates backend helpers and routes
-- Creates `our_pkg.json` configuration
+- Creates `quickfcm.config.json` configuration
 - Shows instructions for frontend package integration
 
 **Commands**:
@@ -119,7 +119,7 @@ npx quick-fcm init --generate-frontend
 ### CLI Generated Files
 ```
 your-project/
-├── our_pkg.json                    # Centralized Configuration
+├── quickfcm.config.json                    # Centralized Configuration
 ├── credentials.json                # Firebase Service Account
 └── src/helper/                     # Backend FCM Engine
     └── FCMHelper.{ts|js}           # Premium, documented helper
@@ -166,9 +166,9 @@ your-project/
 4. **Error Handling**: Comprehensive error management
 5. **TypeScript Support**: Full type definitions
 
-1. **CLI generates** `our_pkg.json` with Firebase config
+1. **CLI generates** `quickfcm.config.json` with Firebase config
 2. **scaffoldFrontend** creates `notificationHandler` with `pushConfig.ts`
-3. **pushConfig.ts** imports `our_pkg.json` for live-syncing
+3. **pushConfig.ts** imports `quickfcm.config.json` for live-syncing
 4. **Package reads** configuration from `pushConfig.ts` in your app
 5. **Service worker** generated on-demand with user's config
 6. **Backend integration** via generated endpoints
