@@ -9,18 +9,9 @@ export function validateVersions(project: ProjectInfo, options: { backendOnly?: 
   // ── Frontend Checks (Skip if backend-only) ────────────────────────────
   if (!backendOnly) {
     // ── Firebase check ─────────────────────────────────────────────────────
-    const isFrontendScope = project.scope === 'frontend' || project.scope === 'both'
-    if (!project.firebaseVersion) {
-      // Prompt for missing firebase if it's a frontend project
-      if (isFrontendScope) {
-        warnings.push({
-          package: 'firebase',
-          found: 'not installed',
-          required: FIREBASE_VERSION_RANGE,
-          fix: 'npm install firebase@latest',
-        })
-      }
-    } else {
+    // NOTE: missing firebase is handled automatically by installDeps —
+    // only warn if it IS installed but at an incompatible version.
+    if (project.firebaseVersion) {
       const coerced = semver.coerce(project.firebaseVersion)
       if (coerced && !semver.satisfies(coerced, FIREBASE_VERSION_RANGE)) {
         warnings.push({

@@ -149,26 +149,15 @@ export async function runPrompts(project: ProjectInfo, options: { backendOnly?: 
   if (apiKey && !backendOnly) {
 
     logger.blank()
-    logger.raw('──────────────────────────────────────────────')
-    logger.raw('  Add these to your .env file')
-    logger.raw('──────────────────────────────────────────────')
-    logger.blank()
-    for (const { bare, value } of fcmKeys) {
-      logger.raw(`  ${envPrefix}${bare}=${value}`)
-    }
-    logger.blank()
-    logger.warn('  ⚠  Never commit .env to git. Add it to .gitignore now.')
-    logger.raw('──────────────────────────────────────────────')
 
-    await input({ message: 'Press Enter once you\'ve added these values...' })
-    logger.blank()
-
+    // Ask FIRST — before showing or requiring anything from the user
     const saveEnv = await confirm({
-      message: 'Save environment variables to .env file automatically?',
+      message: 'Save Firebase config to .env automatically?',
       default: true,
     })
 
     if (saveEnv) {
+      // ── Auto-write path: write silently, no box shown ──────────────────
       try {
         const envPath = path.join(project.rootDir, '.env')
         const envExists = await fileExists(envPath)
@@ -176,9 +165,7 @@ export async function runPrompts(project: ProjectInfo, options: { backendOnly?: 
         let existingLines: string[] = []
         if (envExists) {
           const raw = await readFile(envPath)
-          // Preserve trailing newline behaviour by splitting carefully
           existingLines = raw.split('\n')
-          // Drop a single trailing empty string that split() produces for files ending with \n
           if (existingLines.length > 0 && existingLines[existingLines.length - 1] === '') {
             existingLines.pop()
           }
@@ -200,20 +187,13 @@ export async function runPrompts(project: ProjectInfo, options: { backendOnly?: 
         for (const { bare, value } of fcmKeys) {
           const prefixedKey = `${envPrefix}${bare}`
           if (prefixedKey in lineIndexByKey) {
-            // Update value in place on the same line — preserves surrounding lines exactly
             existingLines[lineIndexByKey[prefixedKey]] = `${prefixedKey}=${value}`
           } else {
             toAppend.push(`${prefixedKey}=${value}`)
           }
         }
 
-        // Reassemble: existing (possibly updated) lines + new keys
-        const finalLines = [
-          ...existingLines,
-          ...toAppend,
-        ]
-        const finalContent = finalLines.join('\n') + '\n'
-
+        const finalContent = [...existingLines, ...toAppend].join('\n') + '\n'
         await writeFile(envPath, finalContent)
         logger.success(`✓  .env updated (${fcmKeys.length} keys) — prefix: ${prefixLabel}`)
 
@@ -222,9 +202,7 @@ export async function runPrompts(project: ProjectInfo, options: { backendOnly?: 
         let gitignoreContent = ''
         try {
           gitignoreContent = await readFile(gitignorePath)
-        } catch {
-          // .gitignore doesn't exist yet — will be created by appendToFile
-        }
+        } catch { /* .gitignore doesn't exist yet */ }
         const gitignoreLines = gitignoreContent.split('\n').map(l => l.trim())
         if (!gitignoreLines.includes('.env')) {
           await appendToFile(gitignorePath, '.env')
@@ -232,8 +210,36 @@ export async function runPrompts(project: ProjectInfo, options: { backendOnly?: 
         }
       } catch (envErr: any) {
         logger.warn(`⚠  Could not save .env file: ${envErr.message}`)
-        logger.info('   Add the environment variables manually.')
+        logger.info('   Copy the values below and add them manually.')
+        // Fall through to show the manual box as a fallback
+        logger.blank()
+        logger.raw('──────────────────────────────────────────────')
+        logger.raw('  Add these to your .env file')
+        logger.raw('──────────────────────────────────────────────')
+        logger.blank()
+        for (const { bare, value } of fcmKeys) {
+          logger.raw(`  ${envPrefix}${bare}=${value}`)
+        }
+        logger.blank()
+        logger.warn('  ⚠  Never commit .env to git. Add it to .gitignore now.')
+        logger.raw('──────────────────────────────────────────────')
       }
+
+    } else {
+      // ── Manual path: show the box so the user can copy/paste ───────────
+      logger.blank()
+      logger.raw('──────────────────────────────────────────────')
+      logger.raw('  Add these to your .env file')
+      logger.raw('──────────────────────────────────────────────')
+      logger.blank()
+      for (const { bare, value } of fcmKeys) {
+        logger.raw(`  ${envPrefix}${bare}=${value}`)
+      }
+      logger.blank()
+      logger.warn('  ⚠  Never commit .env to git. Add it to .gitignore now.')
+      logger.raw('──────────────────────────────────────────────')
+      logger.blank()
+      await input({ message: "Press Enter once you've added these values to your .env..." })
     }
   }
 

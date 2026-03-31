@@ -64,27 +64,23 @@ export async function printSummary(context: CLIContext): Promise<void> {
   logger.blank()
 
   if (context.backendOnly) {
-    logger.raw(`  [1] Install the package (if not already):`)
-    logger.raw(`      npm install quick-fcm`)
-    logger.blank()
-
-    logger.raw(`  [2] Configure your notification settings in:`)
+    logger.raw(`  [1] Configure your notification settings in:`)
     logger.raw(`      push/notification-config.json`)
     logger.blank()
 
-    logger.raw(`  [3] Mount push routes in your server:`)
+    logger.raw(`  [2] Mount push routes in your server:`)
     logger.raw(`      // Express: app.use('/push', pushRoutes)`)
     logger.raw(`      // NestJS: Import PushModule into AppModule`)
     logger.blank()
 
-    logger.raw(`  [4] Send your first notification:`)
+    logger.raw(`  [3] Send your first notification:`)
     logger.raw(`      import { sendPushNotification } from './push/pushHelper'`)
     logger.raw(`      await sendPushNotification(token, { title: 'Hello', body: 'World' })`)
     logger.blank()
 
   } else if (mode === 'files') {
-    logger.raw(`  [1] Read the USAGE.md in src/push-notification/`)
-    logger.raw(`      It has complete integration instructions.`)
+    logger.raw(`  [1] Open the generated integration guide:`)
+    logger.raw(`      src/push-notification/USAGE.md`)
     logger.blank()
 
     logger.raw(`  [2] Wrap your app with <CustomPushProvider>:`)
@@ -95,12 +91,14 @@ export async function printSummary(context: CLIContext): Promise<void> {
     logger.raw(`      const { requestPermission } = usePushMessage()`)
     logger.raw(`      <button onClick={() => requestPermission()}>Enable</button>`)
     logger.blank()
+
   } else {
-    logger.raw(`  [1] Install the package (if not already):`)
-    logger.raw(`      npm install quick-fcm`)
+    // Library mode — quick-fcm is already installed by installDeps
+    logger.raw(`  [1] Open the integration guide generated for your project:`)
+    logger.raw(`      src/NotificationHandler/USAGE.md`)
     logger.blank()
 
-    logger.raw(`  [2] Wrap your app root (src/App.tsx or src/main.tsx):`)
+    logger.raw(`  [2] Wrap your app root (src/App.tsx or layout.tsx):`)
     logger.raw(`      import { CustomPushProvider } from 'quick-fcm'`)
     logger.raw(`      import { pushConfig } from './NotificationHandler/config'`)
     logger.blank()
@@ -108,12 +106,12 @@ export async function printSummary(context: CLIContext): Promise<void> {
     logger.raw(`        <YourApp />`)
     logger.raw(`      </CustomPushProvider>`)
     logger.blank()
-    logger.raw(`  [3] Add a permission toggle button:`)
-    logger.raw(`      Check the USAGE.md in src/NotificationHandler/`)
+
+    logger.raw(`  [3] See USAGE.md for the permission button and full usage examples.`)
     logger.blank()
   }
 
-  logger.raw(`  [${context.backendOnly ? 5 : 4}] Add /public/icon.png (displayed on push notifications)`)
+  logger.raw(`  [${context.backendOnly ? 4 : 4}] Add /public/icon.png (displayed on push notifications)`)
   logger.blank()
 
   if (project.scope === 'both' && !context.backendOnly) {
